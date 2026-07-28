@@ -5,120 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SPK Scenery — Stage Design &amp; Fabrication, NYC</title>
 
-  <!-- Google Fonts fallbacks — replace with @font-face when Bw Aleta No 10, Arbitrary OT, MN Managa Script files are added -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
 
-  <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
   <style>
-    /* ── Brand tokens ──────────────────────────────────────── */
     :root {
-      --liberty-blue:   #0D182C;
-      --charcoal:       #1A1A1C;
-      --powdered:       #F8F3E8;
-      --biltmore-buff:  #E5CC9F;
-      --tropical-mist:  #C9E9E9;
-      --sapphire:       #2D71E0;
-      --kimchi:         #F24D00;
-      --chianti:        #881F3C;
-
-      --font-display: 'MN Managa Script', cursive;
-      --font-heading: 'Arbitrary OT', 'Barlow Condensed', 'Arial Narrow', sans-serif;
-      --font-body:    'Bw Aleta No 10', 'DM Sans', system-ui, sans-serif;
+      --liberty-blue: #0D182C;
+      --charcoal:     #1A1A1C;
+      --powdered:     #F8F3E8;
+      --kimchi:       #F24D00;
+      --sapphire:     #2D71E0;
+      --biltmore-buff:#E5CC9F;
+      --font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
     }
 
-    /* ── Reset ─────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html  { scroll-behavior: smooth; }
     body  { background: var(--charcoal); color: var(--powdered); overflow-x: hidden; }
-    img   { display: block; max-width: 100%; }
-    a     { text-decoration: none; transition: color 0.2s; }
+    img   { display: block; }
+    a     { text-decoration: none; }
 
-    /* ── Nav ───────────────────────────────────────────────── */
+    /* ── NAV ─────────────────────────────────────────────────── */
     #site-nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 10;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 48px;
+      padding: 24px 48px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.4s;
+      transition: opacity 0.8s ease;
     }
-    #site-nav.visible  { opacity: 1; pointer-events: auto; }
-    #site-nav.dark-bg  { /* transparent over reel */ }
-    #site-nav.light-bg { background: rgba(248,243,232,0.95); backdrop-filter: blur(10px); }
-
-    .nav-logo img { width: 120px; height: auto; }
-    #site-nav.light-bg .nav-logo img { filter: invert(1) brightness(0.25); }
-
-    #nav-links {
+    #site-nav.nav-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* Light variant — over cream/powdered sections */
+    #site-nav.nav-light .nav-brand img { filter: brightness(0); }
+    #site-nav.nav-light .nav-links a:not(.nav-cta) { color: var(--liberty-blue); }
+    .nav-brand img {
+      height: 48px;
+      width: auto;
+      max-width: none;
+    }
+    .nav-links {
       display: flex;
       align-items: center;
       gap: 32px;
     }
-    #nav-links a {
-      font-family: var(--font-body);
-      font-size: 11px;
+    .nav-links a {
+      font-family: var(--font);
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--powdered);
+      transition: color 0.2s;
     }
-    #site-nav.light-bg #nav-links a { color: var(--liberty-blue); }
-    #nav-links a:hover { color: var(--kimchi); }
-    #site-nav.light-bg #nav-links a:hover { color: var(--kimchi); }
-
+    .nav-links a:hover { color: var(--kimchi); }
     .nav-cta {
       background: var(--kimchi) !important;
       color: var(--powdered) !important;
-      padding: 10px 20px;
-      border: 2px solid var(--charcoal);
-      transition: opacity 0.2s !important;
+      padding: 10px 24px;
     }
-    .nav-cta:hover { opacity: 0.85; color: var(--powdered) !important; }
-    #site-nav.light-bg .nav-cta { border-color: var(--liberty-blue); }
+    .nav-cta:hover { opacity: 0.85; }
 
-    #nav-toggle {
-      display: none;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 4px;
-    }
-    #nav-toggle span {
-      display: block;
-      width: 24px; height: 2px;
-      background: var(--powdered);
-      margin: 5px 0;
-      transition: background 0.3s;
-    }
-    #site-nav.light-bg #nav-toggle span { background: var(--liberty-blue); }
-
-    /* ── Hero ──────────────────────────────────────────────── */
-    #hero-wrapper {
-      position: relative;
-      width: 100%;
-      height: calc(3000px + 100vh); /* 3000px pin + 100vh sticky overhang for curtain-lift */
-      background: var(--charcoal);
-    }
-    #hero-sticky {
-      position: sticky;
-      top: 0;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      background: transparent;
-      z-index: 3; /* creates stacking context above fixed video (z:1) */
-    }
-
-    /* Reel video — fixed full-viewport, always playing; charcoal-overlay controls visibility */
+    /* ── HERO — fixed video + mask ───────────────────────────── */
     #reel-video {
       position: fixed;
       top: 0; left: 0;
@@ -128,218 +86,223 @@
       margin: 0; padding: 0;
       max-width: none; max-height: none;
     }
-
-    /* Charcoal overlay — covers reel-video on load; fades out to reveal video */
-    #charcoal-overlay {
+    /* Window hole — transparent rect punching through the charcoal mask.
+       box-shadow floods the rest of the screen with charcoal. */
+    #window-hole {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #1A1A1C;
+      width: 0; height: 0;
       z-index: 2;
       pointer-events: none;
+      background: transparent;
+      box-shadow: 0 0 0 100vmax #1A1A1C;
     }
 
-    /* Storefront icon — rendered large, scaled DOWN on load; avoids upscaling blur */
+    /* ── HERO — pinned scroll container ──────────────────────── */
+    #hero-wrapper {
+      position: relative;
+      width: 100%;
+      height: calc(3000px + 100vh);
+    }
+    #hero-sticky {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    /* Storefront icon — 1800px native; scaled down so browser never upscales */
     #icon-group {
       position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.07);
       transform-origin: center center;
       z-index: 3;
       pointer-events: none;
-      will-change: transform;
-      /* left / top / width / height set by initIconGroup(); transform set by syncAll() */
+      will-change: transform, opacity;
     }
-
-    /* SVG rendered at native resolution — crisp at all scroll stages */
     #icon-group img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      image-rendering: crisp-edges;
+      width: 1800px;
+      height: auto;
+      max-width: none;
     }
 
-    /* Full SPK reel logo — fades in after scale completes */
+    /* Reel logo — fades in after storefront disappears */
     #reel-logo {
       position: absolute;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 5;
       opacity: 0;
-      z-index: 4;
       pointer-events: none;
     }
-    #reel-logo img { width: min(540px, 44vw); height: auto; }
+    #reel-logo img {
+      width: min(480px, 62vw);
+      height: auto;
+      max-width: none;
+    }
 
-    /* Checkerboard curtain — sweeps up from bottom to cover full viewport */
+    /* Curtain — rises from bottom; checkerboard leads, cream fills body */
     #hero-curtain {
       position: absolute;
       left: 0; right: 0; bottom: 0;
       height: 0;
       overflow: hidden;
-      z-index: 4;
+      z-index: 6;
       pointer-events: none;
-      background: var(--powdered); /* cream fills above the checkerboard rows */
+      background: var(--powdered);
     }
-    #hero-curtain-inner {
-      position: absolute;
-      left: 0; right: 0; top: 0; /* checkerboard at top = leads the curtain wipe */
+    .check-stripe {
       height: 256px; /* 4 rows × 64px */
       background-image: repeating-conic-gradient(var(--kimchi) 0% 25%, var(--powdered) 0% 50%);
       background-size: 64px 64px;
+      flex-shrink: 0;
+    }
+    #curtain-tagline {
+      position: absolute;
+      bottom: 80px;
+      left: 60px;
+      right: 60px;
+      font-family: var(--font);
+      font-size: clamp(28px, 4vw, 56px);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--liberty-blue);
+      text-transform: uppercase;
+      text-align: center;
     }
 
     #scroll-label {
       position: absolute;
-      bottom: 64px;
+      bottom: 48px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 5;
-      font-family: var(--font-body);
+      z-index: 7;
+      font-family: var(--font);
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.25em;
-      color: rgba(248,243,232,0.55);
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      color: rgba(248,243,232,0.4);
       text-transform: uppercase;
       pointer-events: none;
+      will-change: opacity;
     }
 
-    /* ── About ─────────────────────────────────────────────── */
-    #about {
+    /* ── Sections paint above fixed hero layers ───────────────── */
+    #services, #work, #contact, footer {
       position: relative;
-      background: var(--powdered);
+      z-index: 10;
     }
-    #about-inner {
+
+    /* ── SERVICES / WHAT WE DO ───────────────────────────────── */
+    #services {
+      background: var(--liberty-blue);
+      padding: 120px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 64px;
+    }
+    .section-heading {
+      font-family: var(--font);
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 900;
+      color: var(--powdered);
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1;
+    }
+    #services-storefront { width: min(280px, 36vw); }
+    #services-storefront img { width: 100%; height: auto; }
+
+    /* BUILT FRESH DAILY tagline */
+    #process-tagline {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding: 40px 64px;
+      gap: 28px;
     }
-    #about-text {
-      max-width: 1100px;
-      text-align: center;
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: clamp(26px, 3.6vw, 50px);
-      line-height: 1.22;
-      color: var(--liberty-blue);
-      text-transform: uppercase;
+    #process-tagline img {
+      height: 36px;
+      width: auto;
+      max-width: none;
     }
 
-    /* ── Work ──────────────────────────────────────────────── */
-    #work {
-      background: var(--charcoal);
-      padding: 140px 64px 160px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #work-heading {
-      font-family: var(--font-heading);
-      font-weight: 900;
-      font-size: clamp(52px, 8vw, 96px);
-      line-height: 1;
-      color: var(--powdered);
-      text-align: center;
-      margin-bottom: 80px;
-    }
-    #work-grid {
-      max-width: 1600px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px 40px;
-    }
-    .work-item img {
-      width: 100%;
-      aspect-ratio: 855 / 676;
-      object-fit: cover;
-      border-radius: 24px;
-    }
-    .work-cta-row {
-      margin-top: 64px;
-      text-align: center;
-    }
-    .work-cta-row a {
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(248,243,232,0.5);
-      border-bottom: 1px solid rgba(248,243,232,0.25);
-      padding-bottom: 2px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .work-cta-row a:hover { color: var(--powdered); border-color: var(--powdered); }
-
-    /* ── Services ──────────────────────────────────────────── */
-    #services {
-      background: var(--charcoal);
-      padding: 140px 64px 120px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-top: 1px solid rgba(248,243,232,0.08);
-    }
-    #services-heading {
-      font-family: var(--font-heading);
-      font-size: clamp(36px, 5vw, 64px);
-      line-height: 1;
-      color: var(--powdered);
-      text-transform: uppercase;
-      margin-bottom: 56px;
-      text-align: center;
-    }
-    #services-illustration {
-      width: 100%;
-      max-width: 420px;
-      overflow: hidden;
-      margin-bottom: 56px;
-    }
-    #services-illus-img {
-      width: 100%;
-      transform-origin: center bottom;
-      will-change: transform, opacity;
-    }
-    #services-tagline {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 80px;
-      opacity: 0;
-    }
-    #services-tagline img { height: 28px; width: auto; }
-
+    /* Process columns */
     #services-columns {
-      max-width: 960px;
-      width: 100%;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      opacity: 0;
+      max-width: 860px;
+      width: 100%;
+      border: 1px solid rgba(248,243,232,0.12);
     }
     .service-col {
+      padding: 40px 32px;
       text-align: center;
-      padding: 0 32px;
+      border-right: 1px solid rgba(248,243,232,0.12);
     }
-    .service-col + .service-col { border-left: 1px solid rgba(248,243,232,0.2); }
+    .service-col:last-child { border-right: none; }
     .service-num {
-      font-family: var(--font-body);
-      font-size: 13px;
+      font-family: var(--font);
+      font-size: 11px;
       font-weight: 700;
-      color: rgba(248,243,232,0.35);
+      letter-spacing: 0.24em;
+      color: rgba(248,243,232,0.25);
+      text-transform: uppercase;
+      margin-bottom: 20px;
     }
-    .service-label { height: 26px; width: auto; margin: 10px auto 0; }
+    .service-col > img {
+      height: 28px;
+      width: auto;
+      max-width: none;
+      margin: 0 auto 16px;
+    }
     .service-desc {
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: rgba(248,243,232,0.6);
-      margin-top: 12px;
-      line-height: 1.6;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(248,243,232,0.5);
+      letter-spacing: 0.06em;
+      line-height: 1.55;
+      text-transform: uppercase;
     }
 
-    /* ── Contact ───────────────────────────────────────────── */
+    /* ── FEATURED WORK ───────────────────────────────────────── */
+    #work {
+      background: var(--charcoal);
+      padding: 120px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #work .section-heading { margin-bottom: 64px; }
+    #work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 1400px;
+      width: 100%;
+    }
+    .work-card {
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+    .work-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-width: none;
+      transition: transform 0.3s ease;
+    }
+    .work-card:hover img { transform: scale(1.03); }
+
+    /* ── CONTACT ─────────────────────────────────────────────── */
     #contact {
       background: var(--liberty-blue);
       min-height: 60vh;
@@ -347,199 +310,122 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 36px;
+      padding: 120px 48px;
       text-align: center;
-      padding: 100px 48px;
-      gap: 28px;
-    }
-    #contact-label {
-      font-family: var(--font-body);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      color: var(--kimchi);
-      text-transform: uppercase;
-    }
-    #contact-heading {
-      font-family: var(--font-heading);
-      font-size: clamp(48px, 9vw, 96px);
-      font-weight: 900;
-      color: var(--powdered);
-      line-height: 1;
-      text-transform: uppercase;
-    }
-    #contact-sub {
-      font-family: var(--font-body);
-      font-size: 16px;
-      color: rgba(248,243,232,0.58);
-      max-width: 440px;
-      line-height: 1.6;
     }
     #contact-cta {
       display: inline-block;
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--powdered);
       background: var(--kimchi);
-      padding: 16px 44px;
-      border: 2px solid var(--powdered);
-      margin-top: 4px;
-      transition: background 0.2s, color 0.2s;
+      padding: 18px 56px;
+      transition: opacity 0.2s;
     }
-    #contact-cta:hover { background: var(--powdered); color: var(--kimchi); }
+    #contact-cta:hover { opacity: 0.82; }
 
-    /* ── Footer ────────────────────────────────────────────── */
+    /* ── FOOTER ──────────────────────────────────────────────── */
     footer {
       background: var(--charcoal);
+      border-top: 1px solid rgba(248,243,232,0.08);
       padding: 28px 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid rgba(248,243,232,0.1);
     }
-    footer img { width: 72px; height: auto; filter: brightness(0.45); }
     footer p {
-      font-family: var(--font-body);
-      font-size: 11px;
-      color: rgba(248,243,232,0.35);
-      letter-spacing: 0.1em;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(248,243,232,0.28);
+      text-transform: uppercase;
     }
 
-    /* ── Responsive ────────────────────────────────────────── */
+    /* ── Responsive ──────────────────────────────────────────── */
     @media (max-width: 768px) {
-      #site-nav { padding: 16px 20px; }
-      #nav-toggle { display: block; }
-      #nav-links {
-        display: none;
-        position: absolute;
-        top: 100%; left: 0; right: 0;
-        flex-direction: column;
-        gap: 20px;
-        padding: 28px 24px;
-        background: rgba(26,26,28,0.97);
-        backdrop-filter: blur(10px);
-      }
-      #nav-links.open { display: flex; }
-      #nav-links a { font-size: 13px; }
+      #site-nav { padding: 20px 24px; }
+      .nav-links a:not(.nav-cta) { display: none; }
 
-      #about-inner { padding: 40px 24px; }
+      #services { padding: 80px 24px; gap: 48px; }
+      #services-storefront { width: min(200px, 50vw); }
+      #services-columns { grid-template-columns: 1fr; border: none; }
+      .service-col { border-right: none; border-bottom: 1px solid rgba(248,243,232,0.1); padding: 28px 0; }
+      .service-col:last-child { border-bottom: none; }
+      #process-tagline img { height: 24px; }
+      #process-tagline { gap: 16px; }
 
-      #work { padding: 80px 20px 100px; }
-      #work-heading { margin-bottom: 40px; }
-      #work-grid { grid-template-columns: 1fr; gap: 20px; }
+      #work { padding: 80px 24px; }
+      #work-grid { grid-template-columns: 1fr; gap: 12px; }
 
-      #services { padding: 80px 20px 100px; }
-      #services-columns { grid-template-columns: 1fr; gap: 0; }
-      .service-col { padding: 28px 0; border-left: none !important; }
-      .service-col + .service-col { border-top: 1px solid rgba(248,243,232,0.15); }
+      #contact { padding: 80px 24px; gap: 24px; }
 
-      #contact { padding: 80px 24px; gap: 20px; }
-
-      footer { flex-direction: column-reverse; gap: 16px; text-align: center; padding: 28px 24px; }
+      footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
       #site-nav { padding: 20px 32px; }
-      #about-inner { padding: 40px 40px; }
-      #work { padding: 100px 40px 120px; }
-      #work-grid { gap: 32px; }
-      #services { padding: 100px 40px 100px; }
+      #services { padding: 100px 40px; }
+      #work { padding: 100px 40px; }
     }
   </style>
 </head>
 <body>
 
 <!-- ── NAV ──────────────────────────────────────────────────── -->
-<nav id="site-nav" aria-label="Main navigation">
-  <a class="nav-logo" href="#" aria-label="SPK Scenery home">
+<nav id="site-nav">
+  <a class="nav-brand" href="#" aria-label="SPK Scenery home">
     <img src="assets/Main-logo.svg" alt="SPK Scenery">
   </a>
-  <button id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-  <div id="nav-links" role="menubar">
-    <a href="#work" role="menuitem">Work</a>
-    <a href="#services" role="menuitem">Services</a>
-    <a href="#about" role="menuitem">About</a>
-    <a href="#contact" class="nav-cta" role="menuitem">Contact</a>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#contact" class="nav-cta">Contact</a>
   </div>
 </nav>
 
-<!-- ── HERO ─────────────────────────────────────────────────── -->
-<!-- Reel video — position: fixed, z-index: 1; always playing beneath everything -->
+<!-- ── HERO — fixed layers ────────────────────────────────────── -->
 <video id="reel-video" autoplay muted loop playsinline>
   <source src="assets/reel.mp4" type="video/mp4">
 </video>
+<div id="window-hole" aria-hidden="true"></div>
 
-<!-- Charcoal overlay — position: fixed, z-index: 2; fades out to reveal video -->
-<div id="charcoal-overlay" aria-hidden="true"></div>
-
+<!-- ── HERO — pinned scroll sequence ─────────────────────────── -->
 <div id="hero-wrapper">
   <div id="hero-sticky">
 
-    <!-- Storefront icon — centered, scales 0.15→1 on scroll, then fades out -->
     <div id="icon-group" aria-hidden="true">
       <img src="assets/landing-storefront-logo.svg" alt="">
     </div>
 
-    <!-- Full reel logo (post-scale phase) -->
-    <div id="reel-logo">
+    <div id="reel-logo" aria-hidden="true">
       <img src="assets/spk-reel-logo.svg" alt="SPK Scenery">
     </div>
 
-    <!-- Checkerboard curtain -->
-    <div id="hero-curtain" aria-hidden="true">
-      <div id="hero-curtain-inner"></div>
+    <div id="hero-curtain">
+      <div class="check-stripe"></div>
+      <p id="curtain-tagline">We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy — napkin sketch Monday, doors open Friday.</p>
     </div>
 
-    <!-- Scroll prompt -->
-    <div id="scroll-label" aria-hidden="true">SCROLL</div>
+    <div id="scroll-label" aria-hidden="true">Scroll</div>
 
   </div>
 </div>
 
-<!-- ── ABOUT ─────────────────────────────────────────────────── -->
-<section id="about">
-  <div id="about-inner">
-    <p id="about-text">
-      We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy — napkin sketch Monday, doors open Friday.
-    </p>
-  </div>
-</section>
-
-<!-- ── WORK ──────────────────────────────────────────────────── -->
-<section id="work">
-  <h2 id="work-heading">FEATURED WORK.</h2>
-  <div id="work-grid">
-    <div class="work-item">
-      <img src="assets/featured-work-1.png" alt="Featured project 1" loading="lazy">
-    </div>
-    <div class="work-item">
-      <img src="assets/featured-work-2.png" alt="Featured project 2" loading="lazy">
-    </div>
-    <div class="work-item">
-      <img src="assets/featured-work-3.png" alt="Featured project 3" loading="lazy">
-    </div>
-    <div class="work-item">
-      <img src="assets/featured-work-4.png" alt="Featured project 4" loading="lazy">
-    </div>
-  </div>
-  <div class="work-cta-row">
-    <a href="work.html">VIEW FULL PORTFOLIO</a>
-  </div>
-</section>
-
-<!-- ── SERVICES ──────────────────────────────────────────────── -->
+<!-- ── SERVICES / WHAT WE DO ──────────────────────────────────── -->
 <section id="services">
-  <h2 id="services-heading">WHAT WE DO</h2>
+  <h2 class="section-heading">What We Do</h2>
 
-  <div id="services-illustration">
-    <img id="services-illus-img" src="assets/storefront-logo.svg" alt="SPK Scenery storefront">
+  <div id="services-storefront">
+    <img id="services-illus" src="assets/storefront-logo.svg" alt="SPK Scenery storefront">
   </div>
 
-  <div id="services-tagline">
+  <div id="process-tagline">
     <img src="assets/BUILT.svg" alt="Built">
     <img src="assets/FRESH.svg" alt="Fresh">
     <img src="assets/DAILY.svg" alt="Daily">
@@ -548,266 +434,196 @@
   <div id="services-columns">
     <div class="service-col">
       <div class="service-num">01</div>
-      <img class="service-label" src="assets/DESIGN.svg" alt="Design">
+      <img src="assets/DESIGN.svg" alt="Design">
       <p class="service-desc">Napkin sketch to render, in days.</p>
     </div>
     <div class="service-col">
       <div class="service-num">02</div>
-      <img class="service-label" src="assets/BUILD.svg" alt="Build">
-      <p class="service-desc">Cut, welded, and painted in-house, floor to truck.</p>
+      <img src="assets/BUILD.svg" alt="Build">
+      <p class="service-desc">Cut, welded, and painted in-house.</p>
     </div>
     <div class="service-col">
       <div class="service-num">03</div>
-      <img class="service-label" src="assets/INSTALL.svg" alt="Install">
-      <p class="service-desc">Up and lit before the client's clock runs out.</p>
+      <img src="assets/INSTALL.svg" alt="Install">
+      <p class="service-desc">Up and lit before the clock runs out.</p>
     </div>
   </div>
 </section>
 
-<!-- ── CONTACT ───────────────────────────────────────────────── -->
-<section id="contact">
-  <div id="contact-label">Let's build something</div>
-  <h2 id="contact-heading">GET IN TOUCH.</h2>
-  <p id="contact-sub">Big deadline, bold vision, zero runway — we're built for that call.</p>
-  <a href="mailto:hello@spkscenery.com" id="contact-cta">ORDER NOW</a>
+<!-- ── FEATURED WORK ──────────────────────────────────────────── -->
+<section id="work">
+  <h2 class="section-heading">Featured Work</h2>
+  <div id="work-grid">
+    <div class="work-card">
+      <img src="assets/featured-work-1.png" alt="Featured project 1" loading="lazy">
+    </div>
+    <div class="work-card">
+      <img src="assets/featured-work-2.png" alt="Featured project 2" loading="lazy">
+    </div>
+    <div class="work-card">
+      <img src="assets/featured-work-3.png" alt="Featured project 3" loading="lazy">
+    </div>
+    <div class="work-card">
+      <img src="assets/featured-work-4.png" alt="Featured project 4" loading="lazy">
+    </div>
+  </div>
 </section>
 
-<!-- ── FOOTER ────────────────────────────────────────────────── -->
+<!-- ── CONTACT ────────────────────────────────────────────────── -->
+<section id="contact">
+  <h2 class="section-heading">Let's Build<br>Something</h2>
+  <a id="contact-cta" href="mailto:hello@spkscenery.com">Get In Touch</a>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
 <footer>
-  <img src="assets/Main-logo.svg" alt="SPK Scenery">
-  <p>© 2026 SPK Scenery. New York City.</p>
+  <p>SPK Scenery</p>
+  <p>© 2026 Salt Pepper Ketchup. New York City.</p>
 </footer>
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ── Utilities ─────────────────────────────────────────── */
-  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const norm  = (v, lo, hi) => clamp((v - lo) / (hi - lo), 0, 1);
-  const lerp  = (a, b, t)   => a + (b - a) * t;
+  const norm = (v, lo, hi) => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
+  const lerp = (a, b, t)   => a + (b - a) * t;
 
-  /* ── Hero storefront setup ─────────────────────────────── */
-  const iconGroup      = document.getElementById('icon-group');
-  const charcoalOverlay = document.getElementById('charcoal-overlay');
+  /* ── HERO SCROLL / MASK MECHANIC — DO NOT MODIFY ─────────── */
+  const iconGroup  = document.getElementById('icon-group');
+  const windowHole = document.getElementById('window-hole');
+  const reelLogo   = document.getElementById('reel-logo');
+  const reelVideo  = document.getElementById('reel-video');
+  const curtain    = document.getElementById('hero-curtain');
+  const scrollLbl  = document.getElementById('scroll-label');
 
-  let currentScale = 0.15;
-
-  function initIconGroup() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    /* Base size = 90% of viewport height; icon scales 0.15→1 relative to this */
-    const baseH = vh * 0.9;
-    const baseW = baseH * (93 / 141);
-    iconGroup.style.width  = baseW + 'px';
-    iconGroup.style.height = baseH + 'px';
-    iconGroup.style.left   = (vw / 2 - baseW / 2) + 'px';
-    iconGroup.style.top    = (vh / 2 - baseH / 2) + 'px';
-  }
-
-  function syncAll(scale) {
-    iconGroup.style.transform = `scale(${scale})`;
-  }
-
-  /* ── Hero scroll animation ─────────────────────────────── */
-  const nav       = document.getElementById('site-nav');
-  const reelLogo  = document.getElementById('reel-logo');
-  const curtain   = document.getElementById('hero-curtain');
-  const scrollLbl = document.getElementById('scroll-label');
-  let CURTAIN_H   = window.innerHeight;
-
-  initIconGroup();
-  syncAll(0.15);
-  window.addEventListener('resize', () => {
-    CURTAIN_H = window.innerHeight;
-    initIconGroup();
-    syncAll(currentScale);
-  }, { passive: true });
-
-  /*
-    Scroll progress breakpoints:
-    PA  0.40  scale phase ends (0.15→1 complete)
-    PB  0.65  fade phase ends (icon + charcoal overlay both 0); nav/video visible
-    PC  0.75  reel logo fully visible
-    PD  0.75  curtain starts rising → 1.0
-  */
-  const PA = 0.40, PB = 0.65, PC = 0.75;
+  let CURTAIN_H = window.innerHeight;
+  window.addEventListener('resize', () => { CURTAIN_H = window.innerHeight; }, { passive: true });
 
   const easeIO = gsap.parseEase('power2.inOut');
 
+  /*
+    Progress breakpoints (0 → 1):
+    P0  0.10  anticipation ends, scale begins
+    P2  0.65  scale done; icon + window-hole fade begins, reel logo begins
+    P3  0.75  fade done, reel logo fully visible; curtain begins
+  */
+  const P0 = 0.10, P2 = 0.65, P3 = 0.75;
+
+  /* Window pane as fraction of icon-group bounding rect.
+     Derived from SVG path M24.5 60.7 H67.3 L67.5 129.1 L25.7 129.5 in 93×141 viewBox:
+     left=26.3%, top=43.0%, right=72.6% (width=46.2%), bottom=91.6% (height=48.6%) */
+  const WIN_L = 0.263, WIN_T = 0.430, WIN_W = 0.462, WIN_H = 0.500;
+
   ScrollTrigger.create({
-    trigger:  '#hero-wrapper',
-    start:    'top top',
-    end:      '+=3000',
-    pin:      '#hero-sticky',
-    scrub:    2,
-    smoothChildTiming: true,
+    trigger:    '#hero-wrapper',
+    start:      'top top',
+    end:        '+=3000',
+    pin:        '#hero-sticky',
+    pinSpacing: false,
+    scrub:      2,
     onUpdate(self) {
       const p = self.progress;
 
-      /* Scroll label fades out quickly */
+      /* Scroll label fades at very start */
       scrollLbl.style.opacity = 1 - norm(p, 0, 0.12);
 
-      /* Storefront: scale 0.15→1 from p=0→PA with easing */
-      const scale = lerp(0.15, 1, easeIO(norm(p, 0, PA)));
-      currentScale = scale;
-      syncAll(scale);
+      /* Icon scales 0.07 → 1.0 from P0 → P2; SVG renders at 1800px so we're always scaling down */
+      const scale = lerp(0.07, 1.0, easeIO(norm(p, P0, P2)));
+      iconGroup.style.transform = `translate(-50%, -50%) scale(${scale})`;
 
-      /* Charcoal overlay + icon both fade 1→0 from PA→PB */
-      const fadeOut = 1 - norm(p, PA, PB);
-      charcoalOverlay.style.opacity = fadeOut;
-      iconGroup.style.opacity = fadeOut;
+      /* Position window-hole to match the glass pane in screen coordinates.
+         getBoundingClientRect() accounts for the current scale transform. */
+      const r = iconGroup.getBoundingClientRect();
+      windowHole.style.left   = (r.left + r.width  * WIN_L) + 'px';
+      windowHole.style.top    = (r.top  + r.height * WIN_T) + 'px';
+      windowHole.style.width  = (r.width  * WIN_W) + 'px';
+      windowHole.style.height = (r.height * WIN_H) + 'px';
 
-      /* Reel logo fades in PB→PC */
-      reelLogo.style.opacity = norm(p, PB, PC);
+      /* After zoom: icon + window-hole (box-shadow mask) both fade 1 → 0, revealing full video */
+      const fade = p >= P2 ? 1 - norm(p, P2, P3) : 1;
+      iconGroup.style.opacity  = fade;
+      windowHole.style.opacity = fade;
 
-      /* Curtain rises PC→1 */
-      curtain.style.height = norm(p, PC, 1) * CURTAIN_H + 'px';
+      /* Reel logo fades in P2 → P3 */
+      reelLogo.style.opacity = norm(p, P2, P3);
 
-      /* Nav appears once video is revealed */
-      if (p >= PB) nav.classList.add('visible', 'dark-bg');
-      else         nav.classList.remove('visible', 'dark-bg');
+      /* Curtain rises P3 → 1; reel video fades out simultaneously */
+      const curtainT = norm(p, P3, 1);
+      curtain.style.height    = curtainT * CURTAIN_H + 'px';
+      reelVideo.style.opacity = 1 - curtainT;
     },
   });
+  /* ── END HERO MECHANIC ────────────────────────────────────── */
 
-  /* ── Nav — switch light/dark over the About section ───── */
+  /* ── NAV VISIBILITY + COLOR ──────────────────────────────── */
+  const nav = document.getElementById('site-nav');
+
+  // Reveal nav once the hero reel is fully visible (≈P2 = 65% of 3000px scroll = 1950px)
   ScrollTrigger.create({
-    trigger:    '#about',
-    start:      'top 60px',
-    end:        'bottom 60px',
-    onEnter:      () => { nav.classList.add('light-bg');    nav.classList.remove('dark-bg'); },
-    onLeave:      () => { nav.classList.remove('light-bg'); nav.classList.add('dark-bg'); },
-    onEnterBack:  () => { nav.classList.add('light-bg');    nav.classList.remove('dark-bg'); },
-    onLeaveBack:  () => { nav.classList.remove('light-bg'); nav.classList.add('dark-bg'); },
+    trigger: '#hero-wrapper',
+    start:   'top+=1950 top',
+    onEnter:     () => nav.classList.add('nav-visible'),
+    onLeaveBack: () => nav.classList.remove('nav-visible'),
   });
 
-  /* ── About — text fade in ──────────────────────────────── */
-  gsap.fromTo('#about-text',
-    { opacity: 0, y: 20 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.9, ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#about-text',
-        start: 'top 78%',
-        toggleActions: 'play none none none',
-      },
-    }
-  );
 
-  /* ── Work — heading + staggered cards ──────────────────── */
-  gsap.fromTo('#work-heading',
-    { opacity: 0, y: 28 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.7, ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#work',
-        start: 'top 75%',
-        toggleActions: 'play none none none',
-      },
-    }
-  );
+  /* ── SCROLL REVEAL ANIMATIONS ─────────────────────────────── */
+  const ST = { toggleActions: 'play none none none' };
 
-  gsap.fromTo('.work-item',
-    { opacity: 0, y: 32 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.65, ease: 'power2.out',
-      stagger: 0.12,
-      scrollTrigger: {
-        trigger: '#work-grid',
-        start: 'top 82%',
-        toggleActions: 'play none none none',
-      },
-    }
-  );
-
-  gsap.fromTo('.work-cta-row',
+  /* Curtain tagline — fades in as the cream section fills the curtain */
+  gsap.fromTo('#curtain-tagline',
     { opacity: 0 },
     {
-      opacity: 1, duration: 0.5,
+      opacity: 1,
       scrollTrigger: {
-        trigger: '.work-cta-row',
-        start: 'top 88%',
-        toggleActions: 'play none none none',
+        trigger: '#curtain-tagline',
+        start: 'top 80%',
+        end:   'top 40%',
+        scrub: true,
       },
     }
   );
 
-  /* ── Services — illustration scale + fade entrance (scrub) ── */
-  gsap.fromTo('#services-illus-img',
-    { opacity: 0, scale: 0.85 },
-    {
-      opacity: 1, scale: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '#services-illustration',
-        start:   'top 85%',
-        end:     'top 20%',
-        scrub:   true,
-      },
-    }
-  );
-
-  /* ── Services — tagline + columns fade in ──────────────── */
-  gsap.fromTo('#services-tagline',
-    { opacity: 0, y: 20 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.6, ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#services-tagline',
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-    }
-  );
-
-  gsap.fromTo('#services-columns',
-    { opacity: 0, y: 24 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.6, ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#services-columns',
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-    }
-  );
-
-  /* ── Contact — staggered reveal ────────────────────────── */
-  gsap.fromTo(
-    ['#contact-label', '#contact-heading', '#contact-sub', '#contact-cta'],
-    { opacity: 0, y: 20 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.65, ease: 'power2.out',
-      stagger: 0.1,
-      scrollTrigger: {
-        trigger: '#contact',
-        start: 'top 75%',
-        toggleActions: 'play none none none',
-      },
-    }
-  );
-
-  /* ── Mobile nav toggle ─────────────────────────────────── */
-  const navToggle = document.getElementById('nav-toggle');
-  const navLinks  = document.getElementById('nav-links');
-
-  navToggle.addEventListener('click', () => {
-    const open = navLinks.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', open);
+  /* Services heading */
+  gsap.from('#services .section-heading', {
+    opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
+    scrollTrigger: { trigger: '#services', start: 'top 85%', ...ST },
   });
 
-  /* Close mobile nav on link click */
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      navToggle.setAttribute('aria-expanded', 'false');
-    });
+  /* Storefront illustration — scrub scale+fade */
+  gsap.from('#services-illus', {
+    opacity: 0, scale: 0.92, ease: 'power2.out',
+    scrollTrigger: { trigger: '#services-storefront', start: 'top 85%', end: 'top 20%', scrub: true },
+  });
+
+  /* BUILT FRESH DAILY — stagger left to right */
+  gsap.from('#process-tagline img', {
+    opacity: 0, x: -12, duration: 0.6, ease: 'power2.out', stagger: 0.12,
+    scrollTrigger: { trigger: '#process-tagline', start: 'top 85%', ...ST },
+  });
+
+  /* Process columns — stagger left to right */
+  gsap.from('.service-col', {
+    opacity: 0, y: 32, duration: 0.7, ease: 'power2.out', stagger: 0.15,
+    scrollTrigger: { trigger: '#services-columns', start: 'top 85%', ...ST },
+  });
+
+  /* Featured work heading */
+  gsap.from('#work .section-heading', {
+    opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
+    scrollTrigger: { trigger: '#work', start: 'top 85%', ...ST },
+  });
+
+  /* Featured work images — scale up + fade, staggered */
+  gsap.from('.work-card', {
+    opacity: 0, scale: 0.95, y: 24, duration: 0.75, ease: 'power2.out', stagger: 0.15,
+    scrollTrigger: { trigger: '#work-grid', start: 'top 85%', ...ST },
+  });
+
+  /* Contact */
+  gsap.from(['#contact .section-heading', '#contact-cta'], {
+    opacity: 0, y: 40, duration: 0.75, ease: 'power2.out', stagger: 0.15,
+    scrollTrigger: { trigger: '#contact', start: 'top 85%', ...ST },
   });
 });
 </script>

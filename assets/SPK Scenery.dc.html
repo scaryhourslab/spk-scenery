@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/spk-scenery-design-system-9e08ff90-853a-4d7d-8f5e-902b1c3844aa/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/spk-scenery-design-system-9e08ff90-853a-4d7d-8f5e-902b1c3844aa/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/spk-scenery-design-system-9e08ff90-853a-4d7d-8f5e-902b1c3844aa/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/spk-scenery-design-system-9e08ff90-853a-4d7d-8f5e-902b1c3844aa/tokens/effects.css">
+  <link rel="stylesheet" href="_ds/spk-scenery-design-system-9e08ff90-853a-4d7d-8f5e-902b1c3844aa/styles.css">
+  <script src="_ds/spk-scenery-design-system-9e08ff90-853a-4d7d-8f5e-902b1c3844aa/_ds_bundle.js"></script>
+  <style>
+    html, body { margin: 0; background: #1A1A1C; }
+    a { color: #F8F3E8; }
+    a:hover { color: #F24D00; }
+  </style>
+</helmet>
+
+<div style="position: fixed; top: 0; left: 0; right: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 24px 48px; box-sizing: border-box; pointer-events: none; opacity: {{ headerOpacity }}; transition: opacity 0.4s ease;">
+  <img src="uploads/Main-logo.svg" style="width: 132px; height: auto; display: block; pointer-events: auto; filter: {{ headerLogoFilter }}; transition: filter 0.3s ease;" />
+  <div style="display: flex; align-items: center; gap: 36px; pointer-events: auto;">
+    <a href="#featured-work" style="font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: 0.15em; color: {{ headerTextColor }}; text-decoration: none; text-transform: uppercase; transition: color 0.3s ease;">FEATURED WORK</a>
+    <a href="#what-we-do" style="font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: 0.15em; color: {{ headerTextColor }}; text-decoration: none; text-transform: uppercase; transition: color 0.3s ease;">WHAT WE DO</a>
+    <a href="#contact" style="font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: 0.15em; color: #F8F3E8; text-decoration: none; text-transform: uppercase; background: #F24D00; border: 2px solid #1A1A1C; padding: 10px 20px;">ORDER</a>
+  </div>
+</div>
+
+<div style="position: relative; width: 100%; height: 650vh; background: #1A1A1C;">
+  <div ref="{{ setPin }}" style="position: sticky; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; background: #1A1A1C;">
+
+    <svg width="0" height="0" style="position: absolute;">
+      <defs>
+        <mask id="spk-storefront-mask" maskContentUnits="userSpaceOnUse" maskUnits="userSpaceOnUse">
+          <rect x="0" y="0" width="{{ vw }}" height="{{ vh }}" fill="black"></rect>
+          <g transform="translate({{ maskTranslate }}) scale({{ maskScaleX }}, {{ maskScaleY }})">
+            <path d="M149.833 244.373L148.633 246.343C145.043 243.753 143.053 245.533 139.693 245.553C100.723 245.673 61.6325 245.403 23.1325 245.813C19.4025 245.863 7.4525 247.523 4.9825 245.593C4.4825 244.823 3.0125 242.463 3.0125 241.843V120.723C2.3525 120.353 1.7925 119.793 1.3625 119.053C0.2125 117.063 0.2125 114.063 1.3625 112.073C1.9525 111.043 2.8025 110.363 3.8025 110.063V110.043L3.0325 37.3632V4.31324C3.1125 3.81324 4.3025 1.25324 4.6425 1.02324C50.3925 0.613235 94.5425 -0.0567645 140.342 1.35324C141.662 1.40324 143.003 1.44324 144.312 1.49324C145.132 1.59324 145.922 1.94324 146.452 2.60324C148.562 5.27324 146.282 27.4232 148.042 32.8432L148.023 109.693C149.633 110.533 150.682 112.483 150.682 114.933C150.682 116.333 150.323 117.663 149.673 118.663C149.483 118.943 149.273 119.193 149.053 119.423L149.823 244.383L149.833 244.373Z" fill="white"></path>
+          </g>
+        </mask>
+      </defs>
+    </svg>
+
+    <div style="position: absolute; inset: 0; mask: url(#spk-storefront-mask); -webkit-mask: url(#spk-storefront-mask); opacity: {{ heroVideoOpacity }};">
+      <div style="position: absolute; inset: 0; background-image: url('uploads/Screenshot 2026-07-16 at 5.40.20 PM.png'); background-size: cover; background-position: center;"></div>
+    </div>
+
+    <div style="position: absolute; left: 50%; top: 50%; width: {{ iconBaseW }}px; height: {{ iconBaseH }}px; transform: translate(-50%, -50%) scale({{ iconScale }}); transform-origin: center; opacity: {{ iconGroupOpacity }};">
+      <img src="uploads/landing-storefront-logo-32f248c9.svg" style="width: 100%; height: 100%; display: block; object-fit: contain;" />
+    </div>
+
+    <div style="position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%); z-index: 2; opacity: {{ scrollLabelOpacity }}; display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.25em; color: rgba(248,243,232,0.55); text-transform: uppercase;">
+      <span>SCROLL</span>
+    </div>
+
+    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: {{ heroRevealOpacity }}; pointer-events: none; z-index: 3;">
+      <img src="uploads/spk-reel-logo.svg" style="width: min(540px, 44vw); height: auto; display: block;" />
+    </div>
+
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; height: {{ curtainHeightVh }}vh; overflow: hidden; z-index: 4; pointer-events: none;">
+      <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 100vh; background-image: repeating-conic-gradient(#F24D00 0% 25%, #F8F3E8 0% 50%); background-size: 64px 64px;"></div>
+    </div>
+
+  </div>
+</div>
+
+<div ref="{{ setAboutSectionRef }}" data-screen-label="About" style="background: #F8F3E8; box-sizing: border-box; position: relative;">
+  <div style="position: absolute; top: 0; left: 0; right: 0; height: 48px; background-image: repeating-conic-gradient(#F24D00 0% 25%, #F8F3E8 0% 50%); background-size: 56px 56px; z-index: 1;"></div>
+  <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 80px 64px; box-sizing: border-box;">
+    <div ref="{{ setAboutRef }}" style="max-width: 1160px; text-align: center; opacity: {{ aboutOpacity }}; transform: {{ aboutTransform }}; transition: opacity 0.8s ease, transform 0.8s ease;">
+      <span style="font-family: var(--font-body); font-weight: 600; font-size: 48px; line-height: 118.84%; color: #0D182C; text-transform: uppercase;">We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy — napkin sketch Monday, doors open Friday.</span>
+    </div>
+  </div>
+</div>
+
+<div id="featured-work" ref="{{ setWorkSectionRef }}" data-screen-label="Featured Work" style="background: #1A1A1C; box-sizing: border-box; padding: 140px 64px 160px; display: flex; flex-direction: column; align-items: center;">
+  <span style="font-family: var(--font-body); font-weight: 800; font-size: 96px; line-height: 100%; color: #F8F3E8; text-align: center; margin-bottom: 80px; opacity: {{ workHeadingOpacity }}; transform: {{ workHeadingTransform }}; transition: opacity 0.7s ease, transform 0.7s ease;">FEATURED WORK.</span>
+  <div style="max-width: 1768px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 68px 58px;">
+    <sc-for list="{{ workImages }}" as="photo" hint-placeholder-count="4">
+      <img src="{{ photo.src }}" style="width: 100%; aspect-ratio: 855 / 676; object-fit: cover; border-radius: 32px; display: block; opacity: {{ photo.opacity }}; transform: {{ photo.transform }}; transition: opacity 0.6s ease {{ photo.delay }}ms, transform 0.6s ease {{ photo.delay }}ms;"></img>
+    </sc-for>
+  </div>
+</div>
+
+<div id="what-we-do" ref="{{ setWhatSectionRef }}" data-screen-label="What We Do" style="background: #1A1A1C; box-sizing: border-box; padding: 140px 64px 120px; display: flex; flex-direction: column; align-items: center;">
+  <span style="font-family: var(--font-heading); font-size: clamp(40px, 5vw, 64px); line-height: 1; color: #F8F3E8; text-transform: uppercase; margin-bottom: 56px;">WHAT WE DO</span>
+
+  <div ref="{{ setIllustrationRef }}" style="width: 100%; max-width: 460px; overflow: hidden;">
+    <img src="uploads/storefront-logo.svg" style="width: 100%; display: block; clip-path: {{ storefrontClip }};" />
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 16px; margin-top: 56px; opacity: {{ whatFadeOpacity }}; transform: {{ whatFadeTransform }}; transition: opacity 0.6s ease, transform 0.6s ease;">
+    <img src="uploads/BUILT.svg" style="height: 30px; width: auto; display: block;" />
+    <img src="uploads/FRESH.svg" style="height: 30px; width: auto; display: block;" />
+    <img src="uploads/DAILY.svg" style="height: 30px; width: auto; display: block;" />
+  </div>
+
+  <div style="max-width: 1000px; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 80px; opacity: {{ whatFadeOpacity }}; transform: {{ whatFadeTransform }}; transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;">
+    <sc-for list="{{ whatColumns }}" as="col" hint-placeholder-count="3">
+      <div style="text-align: center; padding: 0 32px; border-left: {{ col.border }};">
+        <div style="font-family: var(--font-body); font-size: 13px; font-weight: 700; color: rgba(248,243,232,0.35);">{{ col.number }}</div>
+        <img src="{{ col.svg }}" style="height: 26px; width: auto; margin: 10px auto 0; display: block;"></img>
+        <div style="font-family: var(--font-body); font-size: 13px; color: rgba(248,243,232,0.6); margin-top: 12px; line-height: 1.5;">{{ col.desc }}</div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+<div id="contact" data-screen-label="Contact" style="background: #1A1A1C; min-height: 40vh;"></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    vw: window.innerWidth, vh: window.innerHeight,
+    progress: 0, headerOnLight: false,
+    aboutVisible: false, workVisible: false,
+    drawProgress: 0, whatFadeVisible: false,
+  };
+  componentDidMount() {
+    this.onScroll = () => {
+      const vh = window.innerHeight;
+      let progress = this.state.progress;
+      if (this.pinEl) {
+        const wrapper = this.pinEl.parentElement;
+        const wrapperTop = wrapper.offsetTop;
+        const pinDistance = wrapper.offsetHeight - vh;
+        const scrolled = Math.min(Math.max(window.scrollY - wrapperTop, 0), pinDistance);
+        progress = pinDistance > 0 ? scrolled / pinDistance : 0;
+      }
+      const headerOnLight = this.aboutSectionEl ? (() => {
+        const rect = this.aboutSectionEl.getBoundingClientRect();
+        return rect.top <= 60 && rect.bottom >= 60;
+      })() : false;
+      let drawProgress = this.state.drawProgress;
+      let whatFadeVisible = this.state.whatFadeVisible;
+      if (this.illustrationEl) {
+        const rect = this.illustrationEl.getBoundingClientRect();
+        const start = vh * 0.95, end = vh * 0.3;
+        drawProgress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+        whatFadeVisible = drawProgress >= 0.98;
+      }
+      this.setState({ progress, headerOnLight, drawProgress, whatFadeVisible });
+    };
+    this.onResize = () => this.setState({ vw: window.innerWidth, vh: window.innerHeight });
+    this.scrollScheduled = false;
+    this.onScrollThrottled = () => {
+      if (this.scrollScheduled) return;
+      this.scrollScheduled = true;
+      requestAnimationFrame(() => { this.scrollScheduled = false; this.onScroll(); });
+    };
+    window.addEventListener('scroll', this.onScrollThrottled, { passive: true });
+    window.addEventListener('resize', this.onResize);
+    this.onScroll();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScrollThrottled);
+    window.removeEventListener('resize', this.onResize);
+    if (this.aboutObserver) this.aboutObserver.disconnect();
+    if (this.workObserver) this.workObserver.disconnect();
+  }
+  renderVals() {
+    const vw = this.state.vw, vh = this.state.vh;
+    const p = this.state.progress;
+    const clamp01 = (n) => Math.max(0, Math.min(1, n));
+    const b1 = 0.14, b2 = 0.5, b3 = 0.62, b4 = 0.68;
+
+    const maxScale = 46;
+    let iconScale;
+    if (p <= b1) iconScale = 1;
+    else if (p >= b3) iconScale = maxScale;
+    else iconScale = 1 + (maxScale - 1) * (p - b1) / (b3 - b1);
+
+    const iconGroupOpacity = p <= b2 ? 1 : clamp01(1 - (p - b2) / (b3 - b2));
+    const heroRevealOpacity = clamp01((p - b3) / (b4 - b3));
+    const scrollLabelOpacity = clamp01(1 - p / (b1 * 0.9));
+
+    const curtainProgress = clamp01((p - b4) / (1 - b4));
+    const curtainHeightVh = curtainProgress * 100;
+    const heroVideoOpacity = p < b4 ? 1 : clamp01(1 - curtainProgress * 1.15);
+
+    const iconBaseH = vh * 0.10;
+    const iconBaseW = iconBaseH * (93 / 141);
+    const displayedW = iconBaseW * iconScale;
+    const displayedH = iconBaseH * iconScale;
+    const iconLeft = vw / 2 - displayedW / 2;
+    const iconTop = vh / 2 - displayedH / 2;
+
+    const revealedPct = clamp01(this.state.drawProgress) * 100;
+
+    return {
+      vw, vh,
+      iconScale, iconGroupOpacity, heroRevealOpacity, scrollLabelOpacity,
+      maskTranslate: `${iconLeft}px, ${iconTop}px`,
+      maskScaleX: displayedW / 153,
+      maskScaleY: displayedH / 248,
+      iconBaseW, iconBaseH,
+      setPin: (el) => { this.pinEl = el; },
+      heroVideoOpacity, curtainHeightVh,
+      headerOpacity: p >= b3 ? 1 : 0,
+      headerTextColor: this.state.headerOnLight ? '#0D182C' : '#F8F3E8',
+      headerLogoFilter: this.state.headerOnLight ? 'invert(1) brightness(0.35)' : 'none',
+
+      setAboutSectionRef: (el) => { if (el) this.aboutSectionEl = el; },
+      setAboutRef: (el) => {
+        if (!el || this.aboutObserver) return;
+        this.aboutObserver = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { this.setState({ aboutVisible: true }); this.aboutObserver.disconnect(); } });
+        }, { threshold: 0.3 });
+        this.aboutObserver.observe(el);
+      },
+      aboutOpacity: this.state.aboutVisible ? 1 : 0,
+      aboutTransform: this.state.aboutVisible ? 'translateY(0px)' : 'translateY(16px)',
+
+      setWorkSectionRef: (el) => {
+        if (!el || this.workObserver) return;
+        this.workObserver = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { this.setState({ workVisible: true }); this.workObserver.disconnect(); } });
+        }, { threshold: 0.15 });
+        this.workObserver.observe(el);
+      },
+      workHeadingOpacity: this.state.workVisible ? 1 : 0,
+      workHeadingTransform: this.state.workVisible ? 'translateY(0px)' : 'translateY(24px)',
+      workImages: [
+        'uploads/featured-work-1.png',
+        'uploads/featured-work-2.png',
+        'uploads/featured-work-3.png',
+        'uploads/featured-work-4.png',
+      ].map((src, i) => ({
+        src,
+        opacity: this.state.workVisible ? 1 : 0,
+        transform: this.state.workVisible ? 'translateY(0px)' : 'translateY(24px)',
+        delay: 150 + i * 90,
+      })),
+
+      setIllustrationRef: (el) => { if (el) this.illustrationEl = el; },
+      storefrontClip: `inset(0 0 ${100 - revealedPct}% 0)`,
+      whatFadeOpacity: this.state.whatFadeVisible ? 1 : 0,
+      whatFadeTransform: this.state.whatFadeVisible ? 'translateY(0px)' : 'translateY(24px)',
+      whatColumns: [
+        { number: '01', svg: 'uploads/DESIGN.svg', desc: 'Napkin sketch to render, in days.', border: 'none' },
+        { number: '02', svg: 'uploads/BUILD.svg', desc: 'Cut, welded, and painted in-house, floor to truck.', border: '1px solid rgba(248,243,232,0.2)' },
+        { number: '03', svg: 'uploads/INSTALL.svg', desc: "Up and lit before the client's clock runs out.", border: '1px solid rgba(248,243,232,0.2)' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
