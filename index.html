@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPK Scenery — Stage Design &amp; Fabrication, NYC</title>
+
+  <!-- Google Fonts fallbacks — replace with @font-face when Bw Aleta No 10, Arbitrary OT, MN Managa Script files are added -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <style>
+    /* ── Brand tokens ──────────────────────────────────────── */
+    :root {
+      --liberty-blue:   #0D182C;
+      --charcoal:       #1A1A1C;
+      --powdered:       #F8F3E8;
+      --biltmore-buff:  #E5CC9F;
+      --tropical-mist:  #C9E9E9;
+      --sapphire:       #2D71E0;
+      --kimchi:         #F24D00;
+      --chianti:        #881F3C;
+
+      --font-display: 'MN Managa Script', cursive;
+      --font-heading: 'Arbitrary OT', 'Barlow Condensed', 'Arial Narrow', sans-serif;
+      --font-body:    'Bw Aleta No 10', 'DM Sans', system-ui, sans-serif;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html  { scroll-behavior: smooth; }
+    body  { background: var(--charcoal); color: var(--powdered); overflow-x: hidden; }
+    img   { display: block; max-width: 100%; }
+    a     { text-decoration: none; transition: color 0.2s; }
+
+    /* ── Nav ───────────────────────────────────────────────── */
+    #site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    #site-nav.visible  { opacity: 1; pointer-events: auto; }
+    #site-nav.dark-bg  { /* transparent over reel */ }
+    #site-nav.light-bg { background: rgba(248,243,232,0.95); backdrop-filter: blur(10px); }
+
+    .nav-logo img { width: 120px; height: auto; }
+    #site-nav.light-bg .nav-logo img { filter: invert(1) brightness(0.25); }
+
+    #nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    #nav-links a {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--powdered);
+    }
+    #site-nav.light-bg #nav-links a { color: var(--liberty-blue); }
+    #nav-links a:hover { color: var(--kimchi); }
+    #site-nav.light-bg #nav-links a:hover { color: var(--kimchi); }
+
+    .nav-cta {
+      background: var(--kimchi) !important;
+      color: var(--powdered) !important;
+      padding: 10px 20px;
+      border: 2px solid var(--charcoal);
+      transition: opacity 0.2s !important;
+    }
+    .nav-cta:hover { opacity: 0.85; color: var(--powdered) !important; }
+    #site-nav.light-bg .nav-cta { border-color: var(--liberty-blue); }
+
+    #nav-toggle {
+      display: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    #nav-toggle span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--powdered);
+      margin: 5px 0;
+      transition: background 0.3s;
+    }
+    #site-nav.light-bg #nav-toggle span { background: var(--liberty-blue); }
+
+    /* ── Hero ──────────────────────────────────────────────── */
+    #hero-wrapper {
+      position: relative;
+      width: 100%;
+      height: calc(3000px + 100vh); /* 3000px pin + 100vh sticky overhang for curtain-lift */
+      background: var(--charcoal);
+    }
+    #hero-sticky {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: transparent;
+      z-index: 3; /* creates stacking context above fixed video (z:1) */
+    }
+
+    /* Reel video — fixed full-viewport layer; starts hidden, fades in as storefront fades out */
+    #reel-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 1;
+      opacity: 0;
+      margin: 0;
+      padding: 0;
+      max-width: none;
+      max-height: none;
+    }
+
+    /* Storefront icon — rendered large, scaled DOWN on load; avoids upscaling blur */
+    #icon-group {
+      position: absolute;
+      transform-origin: center center;
+      z-index: 3;
+      pointer-events: none;
+      will-change: transform;
+      /* left / top / width / height set by initIconGroup(); transform set by syncAll() */
+    }
+
+    /* SVG rendered at native resolution — crisp at all scroll stages */
+    #icon-group img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      image-rendering: crisp-edges;
+    }
+
+    /* Full SPK reel logo — fades in after scale completes */
+    #reel-logo {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      z-index: 4;
+      pointer-events: none;
+    }
+    #reel-logo img { width: min(540px, 44vw); height: auto; }
+
+    /* Checkerboard curtain — sweeps up from bottom to cover full viewport */
+    #hero-curtain {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 0;
+      overflow: hidden;
+      z-index: 4;
+      pointer-events: none;
+      background: var(--powdered); /* cream fills above the checkerboard rows */
+    }
+    #hero-curtain-inner {
+      position: absolute;
+      left: 0; right: 0; top: 0; /* checkerboard at top = leads the curtain wipe */
+      height: 256px; /* 4 rows × 64px */
+      background-image: repeating-conic-gradient(var(--kimchi) 0% 25%, var(--powdered) 0% 50%);
+      background-size: 64px 64px;
+    }
+
+    #scroll-label {
+      position: absolute;
+      bottom: 64px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      color: rgba(248,243,232,0.55);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    /* ── About ─────────────────────────────────────────────── */
+    #about {
+      position: relative;
+      background: var(--powdered);
+    }
+    #about-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 64px;
+    }
+    #about-text {
+      max-width: 1100px;
+      text-align: center;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: clamp(26px, 3.6vw, 50px);
+      line-height: 1.22;
+      color: var(--liberty-blue);
+      text-transform: uppercase;
+    }
+
+    /* ── Work ──────────────────────────────────────────────── */
+    #work {
+      background: var(--charcoal);
+      padding: 140px 64px 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #work-heading {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: clamp(52px, 8vw, 96px);
+      line-height: 1;
+      color: var(--powdered);
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    #work-grid {
+      max-width: 1600px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px 40px;
+    }
+    .work-item img {
+      width: 100%;
+      aspect-ratio: 855 / 676;
+      object-fit: cover;
+      border-radius: 24px;
+    }
+    .work-cta-row {
+      margin-top: 64px;
+      text-align: center;
+    }
+    .work-cta-row a {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(248,243,232,0.5);
+      border-bottom: 1px solid rgba(248,243,232,0.25);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .work-cta-row a:hover { color: var(--powdered); border-color: var(--powdered); }
+
+    /* ── Services ──────────────────────────────────────────── */
+    #services {
+      background: var(--charcoal);
+      padding: 140px 64px 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-top: 1px solid rgba(248,243,232,0.08);
+    }
+    #services-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1;
+      color: var(--powdered);
+      text-transform: uppercase;
+      margin-bottom: 56px;
+      text-align: center;
+    }
+    #services-illustration {
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      margin-bottom: 56px;
+    }
+    #services-illus-img {
+      width: 100%;
+      transform-origin: center bottom;
+      will-change: transform, opacity;
+    }
+    #services-tagline {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 80px;
+      opacity: 0;
+    }
+    #services-tagline img { height: 28px; width: auto; }
+
+    #services-columns {
+      max-width: 960px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      opacity: 0;
+    }
+    .service-col {
+      text-align: center;
+      padding: 0 32px;
+    }
+    .service-col + .service-col { border-left: 1px solid rgba(248,243,232,0.2); }
+    .service-num {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(248,243,232,0.35);
+    }
+    .service-label { height: 26px; width: auto; margin: 10px auto 0; }
+    .service-desc {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: rgba(248,243,232,0.6);
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    /* ── Contact ───────────────────────────────────────────── */
+    #contact {
+      background: var(--liberty-blue);
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 48px;
+      gap: 28px;
+    }
+    #contact-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: var(--kimchi);
+      text-transform: uppercase;
+    }
+    #contact-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(48px, 9vw, 96px);
+      font-weight: 900;
+      color: var(--powdered);
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    #contact-sub {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: rgba(248,243,232,0.58);
+      max-width: 440px;
+      line-height: 1.6;
+    }
+    #contact-cta {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--powdered);
+      background: var(--kimchi);
+      padding: 16px 44px;
+      border: 2px solid var(--powdered);
+      margin-top: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+    #contact-cta:hover { background: var(--powdered); color: var(--kimchi); }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    footer {
+      background: var(--charcoal);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(248,243,232,0.1);
+    }
+    footer img { width: 72px; height: auto; filter: brightness(0.45); }
+    footer p {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: rgba(248,243,232,0.35);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      #site-nav { padding: 16px 20px; }
+      #nav-toggle { display: block; }
+      #nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        flex-direction: column;
+        gap: 20px;
+        padding: 28px 24px;
+        background: rgba(26,26,28,0.97);
+        backdrop-filter: blur(10px);
+      }
+      #nav-links.open { display: flex; }
+      #nav-links a { font-size: 13px; }
+
+      #about-inner { padding: 40px 24px; }
+
+      #work { padding: 80px 20px 100px; }
+      #work-heading { margin-bottom: 40px; }
+      #work-grid { grid-template-columns: 1fr; gap: 20px; }
+
+      #services { padding: 80px 20px 100px; }
+      #services-columns { grid-template-columns: 1fr; gap: 0; }
+      .service-col { padding: 28px 0; border-left: none !important; }
+      .service-col + .service-col { border-top: 1px solid rgba(248,243,232,0.15); }
+
+      #contact { padding: 80px 24px; gap: 20px; }
+
+      footer { flex-direction: column-reverse; gap: 16px; text-align: center; padding: 28px 24px; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      #site-nav { padding: 20px 32px; }
+      #about-inner { padding: 40px 40px; }
+      #work { padding: 100px 40px 120px; }
+      #work-grid { gap: 32px; }
+      #services { padding: 100px 40px 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav id="site-nav" aria-label="Main navigation">
+  <a class="nav-logo" href="#" aria-label="SPK Scenery home">
+    <img src="assets/Main-logo.svg" alt="SPK Scenery">
+  </a>
+  <button id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div id="nav-links" role="menubar">
+    <a href="#work" role="menuitem">Work</a>
+    <a href="#services" role="menuitem">Services</a>
+    <a href="#about" role="menuitem">About</a>
+    <a href="#contact" class="nav-cta" role="menuitem">Contact</a>
+  </div>
+</nav>
+
+<!-- Glass clip-path — rect matches the window pane in landing-storefront-logo.svg's 93×141 viewBox -->
+<svg id="glass-clip-svg" xmlns="http://www.w3.org/2000/svg"
+     style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <clipPath id="glass-clip" clipPathUnits="userSpaceOnUse">
+      <rect id="glass-rect" x="0" y="0" width="0" height="0"/>
+    </clipPath>
+  </defs>
+</svg>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<div id="hero-wrapper">
+  <div id="hero-sticky">
+
+    <!-- Reel video — full-viewport background; storefront illustration layers on top -->
+    <video id="reel-video" autoplay muted loop playsinline>
+      <source src="assets/reel.mp4" type="video/mp4">
+    </video>
+
+    <!-- Storefront icon — SVG transparent glass reveals #reel-video through the glass-clip -->
+    <div id="icon-group" aria-hidden="true">
+      <img src="assets/landing-storefront-logo.svg" alt="">
+    </div>
+
+    <!-- Full reel logo (post-scale phase) -->
+    <div id="reel-logo">
+      <img src="assets/spk-reel-logo.svg" alt="SPK Scenery">
+    </div>
+
+    <!-- Checkerboard curtain -->
+    <div id="hero-curtain" aria-hidden="true">
+      <div id="hero-curtain-inner"></div>
+    </div>
+
+    <!-- Scroll prompt -->
+    <div id="scroll-label" aria-hidden="true">SCROLL</div>
+
+  </div>
+</div>
+
+<!-- ── ABOUT ─────────────────────────────────────────────────── -->
+<section id="about">
+  <div id="about-inner">
+    <p id="about-text">
+      We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy — napkin sketch Monday, doors open Friday.
+    </p>
+  </div>
+</section>
+
+<!-- ── WORK ──────────────────────────────────────────────────── -->
+<section id="work">
+  <h2 id="work-heading">FEATURED WORK.</h2>
+  <div id="work-grid">
+    <div class="work-item">
+      <img src="assets/featured-work-1.png" alt="Featured project 1" loading="lazy">
+    </div>
+    <div class="work-item">
+      <img src="assets/featured-work-2.png" alt="Featured project 2" loading="lazy">
+    </div>
+    <div class="work-item">
+      <img src="assets/featured-work-3.png" alt="Featured project 3" loading="lazy">
+    </div>
+    <div class="work-item">
+      <img src="assets/featured-work-4.png" alt="Featured project 4" loading="lazy">
+    </div>
+  </div>
+  <div class="work-cta-row">
+    <a href="work.html">VIEW FULL PORTFOLIO</a>
+  </div>
+</section>
+
+<!-- ── SERVICES ──────────────────────────────────────────────── -->
+<section id="services">
+  <h2 id="services-heading">WHAT WE DO</h2>
+
+  <div id="services-illustration">
+    <img id="services-illus-img" src="assets/storefront-logo.svg" alt="SPK Scenery storefront">
+  </div>
+
+  <div id="services-tagline">
+    <img src="assets/BUILT.svg" alt="Built">
+    <img src="assets/FRESH.svg" alt="Fresh">
+    <img src="assets/DAILY.svg" alt="Daily">
+  </div>
+
+  <div id="services-columns">
+    <div class="service-col">
+      <div class="service-num">01</div>
+      <img class="service-label" src="assets/DESIGN.svg" alt="Design">
+      <p class="service-desc">Napkin sketch to render, in days.</p>
+    </div>
+    <div class="service-col">
+      <div class="service-num">02</div>
+      <img class="service-label" src="assets/BUILD.svg" alt="Build">
+      <p class="service-desc">Cut, welded, and painted in-house, floor to truck.</p>
+    </div>
+    <div class="service-col">
+      <div class="service-num">03</div>
+      <img class="service-label" src="assets/INSTALL.svg" alt="Install">
+      <p class="service-desc">Up and lit before the client's clock runs out.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ───────────────────────────────────────────────── -->
+<section id="contact">
+  <div id="contact-label">Let's build something</div>
+  <h2 id="contact-heading">GET IN TOUCH.</h2>
+  <p id="contact-sub">Big deadline, bold vision, zero runway — we're built for that call.</p>
+  <a href="mailto:hello@spkscenery.com" id="contact-cta">ORDER NOW</a>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  <img src="assets/Main-logo.svg" alt="SPK Scenery">
+  <p>© 2026 SPK Scenery. New York City.</p>
+</footer>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── Utilities ─────────────────────────────────────────── */
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const norm  = (v, lo, hi) => clamp((v - lo) / (hi - lo), 0, 1);
+  const lerp  = (a, b, t)   => a + (b - a) * t;
+
+  /* ── Hero storefront setup ─────────────────────────────── */
+  const iconGroup = document.getElementById('icon-group');
+  const glassRect = document.getElementById('glass-rect');
+
+  let currentScale = 1;
+
+  /*
+    Glass pane coords from landing-storefront-logo.svg's 93×141 viewBox subpath:
+    M24.4983 60.6595 H67.3018 L67.522 129.118 L25.7313 129.459 Z
+  */
+  const GX = 24.5, GY = 60.66, GW = 42.82, GH = 68.46;
+
+  function initIconGroup() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const baseH = vh * 0.10;
+    const baseW = baseH * (93 / 141);
+    iconGroup.style.width  = baseW + 'px';
+    iconGroup.style.height = baseH + 'px';
+    iconGroup.style.left   = (vw / 2 - baseW / 2) + 'px';
+    iconGroup.style.top    = (vh / 2 - baseH / 2) + 'px';
+    /* Clip rect in icon's local pixel space — matches the glass pane exactly at scale 1 */
+    glassRect.setAttribute('x',      GX / 93  * baseW);
+    glassRect.setAttribute('y',      GY / 141 * baseH);
+    glassRect.setAttribute('width',  GW / 93  * baseW);
+    glassRect.setAttribute('height', GH / 141 * baseH);
+  }
+
+  /* Only the transform changes on scroll — clip rect stays static and scales with it */
+  function syncAll(scale) {
+    iconGroup.style.transform = `scale(${scale})`;
+  }
+
+  /* ── Hero scroll animation ─────────────────────────────── */
+  const nav       = document.getElementById('site-nav');
+  const reelVideo = document.getElementById('reel-video');
+  const reelLogo  = document.getElementById('reel-logo');
+  const curtain   = document.getElementById('hero-curtain');
+  const scrollLbl = document.getElementById('scroll-label');
+  let CURTAIN_H   = window.innerHeight;
+
+  initIconGroup();
+  syncAll(1);
+  window.addEventListener('resize', () => {
+    CURTAIN_H = window.innerHeight;
+    initIconGroup();
+    syncAll(currentScale);
+  }, { passive: true });
+
+  /*
+    Scroll progress breakpoints:
+    PA   0.10  anticipation pause ends — zoom begins
+    PC   0.50  storefront fade starts (overlaps with zoom)
+    PB   0.65  zoom complete AND storefront fully gone
+    PLR  0.73  reel logo fully visible
+    PE   0.89  curtain starts + reel video fades
+  */
+  const PA = 0.10, PC = 0.40, PB = 0.60, PLR = 0.68, PE = 0.82;
+  const MAX_SCALE = 46;
+
+  /* power2.inOut applied to the zoom so it feels heavy and weighted */
+  const easeIO = gsap.parseEase('power2.inOut');
+
+  ScrollTrigger.create({
+    trigger:  '#hero-wrapper',
+    start:    'top top',
+    end:              '+=3000',
+    pin:              '#hero-sticky',
+    scrub:            2,
+    smoothChildTiming: true,
+    onUpdate(self) {
+      const p = self.progress;
+
+      /* Scroll label fades during anticipation pause */
+      scrollLbl.style.opacity = 1 - clamp(norm(p, 0, PA * 0.75), 0, 1);
+
+      /* Storefront zoom: nothing before PA, eased power2.inOut to PB, clamped at MAX_SCALE */
+      let scale = 1;
+      if      (p >= PB) scale = MAX_SCALE;
+      else if (p >  PA) scale = lerp(1, MAX_SCALE, easeIO(norm(p, PA, PB)));
+      currentScale = scale;
+      syncAll(scale);
+
+      /* Storefront fades out (PC → PB); icon-group opacity also fades #glass-video inside */
+      const fadeOut = p >= PC ? 1 - clamp(norm(p, PC, PB), 0, 1) : 1;
+      iconGroup.style.opacity = fadeOut;
+
+      /* Reel logo fades in once storefront is gone (PB → PLR) */
+      reelLogo.style.opacity = clamp(norm(p, PB, PLR), 0, 1);
+
+      /* Reel video: hidden until storefront fades (0 → PC), then fades in (PC → PB),
+         then fades out with curtain (PE → 1) */
+      if (p < PC)       reelVideo.style.opacity = 0;
+      else if (p < PB)  reelVideo.style.opacity = clamp(norm(p, PC, PB), 0, 1);
+      else if (p < PE)  reelVideo.style.opacity = 1;
+      else              reelVideo.style.opacity = 1 - clamp(norm(p, PE, 1), 0, 1);
+
+      /* Curtain sweeps up from bottom — checkerboard leads, cream fills above */
+      curtain.style.height = clamp(norm(p, PE, 1), 0, 1) * CURTAIN_H + 'px';
+
+      /* Nav appears once storefront is filling the frame */
+      if (p >= PB) {
+        nav.classList.add('visible', 'dark-bg');
+      } else {
+        nav.classList.remove('visible', 'dark-bg');
+      }
+    },
+  });
+
+  /* ── Nav — switch light/dark over the About section ───── */
+  ScrollTrigger.create({
+    trigger:    '#about',
+    start:      'top 60px',
+    end:        'bottom 60px',
+    onEnter:      () => { nav.classList.add('light-bg');    nav.classList.remove('dark-bg'); },
+    onLeave:      () => { nav.classList.remove('light-bg'); nav.classList.add('dark-bg'); },
+    onEnterBack:  () => { nav.classList.add('light-bg');    nav.classList.remove('dark-bg'); },
+    onLeaveBack:  () => { nav.classList.remove('light-bg'); nav.classList.add('dark-bg'); },
+  });
+
+  /* ── About — text fade in ──────────────────────────────── */
+  gsap.fromTo('#about-text',
+    { opacity: 0, y: 20 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.9, ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#about-text',
+        start: 'top 78%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  /* ── Work — heading + staggered cards ──────────────────── */
+  gsap.fromTo('#work-heading',
+    { opacity: 0, y: 28 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.7, ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#work',
+        start: 'top 75%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  gsap.fromTo('.work-item',
+    { opacity: 0, y: 32 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.65, ease: 'power2.out',
+      stagger: 0.12,
+      scrollTrigger: {
+        trigger: '#work-grid',
+        start: 'top 82%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  gsap.fromTo('.work-cta-row',
+    { opacity: 0 },
+    {
+      opacity: 1, duration: 0.5,
+      scrollTrigger: {
+        trigger: '.work-cta-row',
+        start: 'top 88%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  /* ── Services — illustration scale + fade entrance (scrub) ── */
+  gsap.fromTo('#services-illus-img',
+    { opacity: 0, scale: 0.85 },
+    {
+      opacity: 1, scale: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#services-illustration',
+        start:   'top 85%',
+        end:     'top 20%',
+        scrub:   true,
+      },
+    }
+  );
+
+  /* ── Services — tagline + columns fade in ──────────────── */
+  gsap.fromTo('#services-tagline',
+    { opacity: 0, y: 20 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.6, ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#services-tagline',
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  gsap.fromTo('#services-columns',
+    { opacity: 0, y: 24 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.6, ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#services-columns',
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  /* ── Contact — staggered reveal ────────────────────────── */
+  gsap.fromTo(
+    ['#contact-label', '#contact-heading', '#contact-sub', '#contact-cta'],
+    { opacity: 0, y: 20 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.65, ease: 'power2.out',
+      stagger: 0.1,
+      scrollTrigger: {
+        trigger: '#contact',
+        start: 'top 75%',
+        toggleActions: 'play none none none',
+      },
+    }
+  );
+
+  /* ── Mobile nav toggle ─────────────────────────────────── */
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinks  = document.getElementById('nav-links');
+
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open);
+  });
+
+  /* Close mobile nav on link click */
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+});
+</script>
+</body>
+</html>
