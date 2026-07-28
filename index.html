@@ -118,20 +118,25 @@
       z-index: 3; /* creates stacking context above fixed video (z:1) */
     }
 
-    /* Reel video — fixed full-viewport layer; starts hidden, fades in as storefront fades out */
+    /* Reel video — fixed full-viewport, always playing; charcoal-overlay controls visibility */
     #reel-video {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       object-fit: cover;
       z-index: 1;
-      opacity: 0;
-      margin: 0;
-      padding: 0;
-      max-width: none;
-      max-height: none;
+      margin: 0; padding: 0;
+      max-width: none; max-height: none;
+    }
+
+    /* Charcoal overlay — covers reel-video on load; fades out to reveal video */
+    #charcoal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #1A1A1C;
+      z-index: 2;
+      pointer-events: none;
     }
 
     /* Storefront icon — rendered large, scaled DOWN on load; avoids upscaling blur */
@@ -462,26 +467,19 @@
   </div>
 </nav>
 
-<!-- Glass clip-path — rect matches the window pane in landing-storefront-logo.svg's 93×141 viewBox -->
-<svg id="glass-clip-svg" xmlns="http://www.w3.org/2000/svg"
-     style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-  <defs>
-    <clipPath id="glass-clip" clipPathUnits="userSpaceOnUse">
-      <rect id="glass-rect" x="0" y="0" width="0" height="0"/>
-    </clipPath>
-  </defs>
-</svg>
-
 <!-- ── HERO ─────────────────────────────────────────────────── -->
+<!-- Reel video — position: fixed, z-index: 1; always playing beneath everything -->
+<video id="reel-video" autoplay muted loop playsinline>
+  <source src="assets/reel.mp4" type="video/mp4">
+</video>
+
+<!-- Charcoal overlay — position: fixed, z-index: 2; fades out to reveal video -->
+<div id="charcoal-overlay" aria-hidden="true"></div>
+
 <div id="hero-wrapper">
   <div id="hero-sticky">
 
-    <!-- Reel video — full-viewport background; storefront illustration layers on top -->
-    <video id="reel-video" autoplay muted loop playsinline>
-      <source src="assets/reel.mp4" type="video/mp4">
-    </video>
-
-    <!-- Storefront icon — SVG transparent glass reveals #reel-video through the glass-clip -->
+    <!-- Storefront icon — centered, scales 0.15→1 on scroll, then fades out -->
     <div id="icon-group" aria-hidden="true">
       <img src="assets/landing-storefront-logo.svg" alt="">
     </div>
@@ -590,48 +588,36 @@ window.addEventListener('DOMContentLoaded', () => {
   const lerp  = (a, b, t)   => a + (b - a) * t;
 
   /* ── Hero storefront setup ─────────────────────────────── */
-  const iconGroup = document.getElementById('icon-group');
-  const glassRect = document.getElementById('glass-rect');
+  const iconGroup      = document.getElementById('icon-group');
+  const charcoalOverlay = document.getElementById('charcoal-overlay');
 
-  let currentScale = 1;
-
-  /*
-    Glass pane coords from landing-storefront-logo.svg's 93×141 viewBox subpath:
-    M24.4983 60.6595 H67.3018 L67.522 129.118 L25.7313 129.459 Z
-  */
-  const GX = 24.5, GY = 60.66, GW = 42.82, GH = 68.46;
+  let currentScale = 0.15;
 
   function initIconGroup() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const baseH = vh * 0.10;
+    /* Base size = 90% of viewport height; icon scales 0.15→1 relative to this */
+    const baseH = vh * 0.9;
     const baseW = baseH * (93 / 141);
     iconGroup.style.width  = baseW + 'px';
     iconGroup.style.height = baseH + 'px';
     iconGroup.style.left   = (vw / 2 - baseW / 2) + 'px';
     iconGroup.style.top    = (vh / 2 - baseH / 2) + 'px';
-    /* Clip rect in icon's local pixel space — matches the glass pane exactly at scale 1 */
-    glassRect.setAttribute('x',      GX / 93  * baseW);
-    glassRect.setAttribute('y',      GY / 141 * baseH);
-    glassRect.setAttribute('width',  GW / 93  * baseW);
-    glassRect.setAttribute('height', GH / 141 * baseH);
   }
 
-  /* Only the transform changes on scroll — clip rect stays static and scales with it */
   function syncAll(scale) {
     iconGroup.style.transform = `scale(${scale})`;
   }
 
   /* ── Hero scroll animation ─────────────────────────────── */
   const nav       = document.getElementById('site-nav');
-  const reelVideo = document.getElementById('reel-video');
   const reelLogo  = document.getElementById('reel-logo');
   const curtain   = document.getElementById('hero-curtain');
   const scrollLbl = document.getElementById('scroll-label');
   let CURTAIN_H   = window.innerHeight;
 
   initIconGroup();
-  syncAll(1);
+  syncAll(0.15);
   window.addEventListener('resize', () => {
     CURTAIN_H = window.innerHeight;
     initIconGroup();
@@ -640,61 +626,47 @@ window.addEventListener('DOMContentLoaded', () => {
 
   /*
     Scroll progress breakpoints:
-    PA   0.10  anticipation pause ends — zoom begins
-    PC   0.50  storefront fade starts (overlaps with zoom)
-    PB   0.65  zoom complete AND storefront fully gone
-    PLR  0.73  reel logo fully visible
-    PE   0.89  curtain starts + reel video fades
+    PA  0.40  scale phase ends (0.15→1 complete)
+    PB  0.65  fade phase ends (icon + charcoal overlay both 0); nav/video visible
+    PC  0.75  reel logo fully visible
+    PD  0.75  curtain starts rising → 1.0
   */
-  const PA = 0.10, PC = 0.40, PB = 0.60, PLR = 0.68, PE = 0.82;
-  const MAX_SCALE = 46;
+  const PA = 0.40, PB = 0.65, PC = 0.75;
 
-  /* power2.inOut applied to the zoom so it feels heavy and weighted */
   const easeIO = gsap.parseEase('power2.inOut');
 
   ScrollTrigger.create({
     trigger:  '#hero-wrapper',
     start:    'top top',
-    end:              '+=3000',
-    pin:              '#hero-sticky',
-    scrub:            2,
+    end:      '+=3000',
+    pin:      '#hero-sticky',
+    scrub:    2,
     smoothChildTiming: true,
     onUpdate(self) {
       const p = self.progress;
 
-      /* Scroll label fades during anticipation pause */
-      scrollLbl.style.opacity = 1 - clamp(norm(p, 0, PA * 0.75), 0, 1);
+      /* Scroll label fades out quickly */
+      scrollLbl.style.opacity = 1 - norm(p, 0, 0.12);
 
-      /* Storefront zoom: nothing before PA, eased power2.inOut to PB, clamped at MAX_SCALE */
-      let scale = 1;
-      if      (p >= PB) scale = MAX_SCALE;
-      else if (p >  PA) scale = lerp(1, MAX_SCALE, easeIO(norm(p, PA, PB)));
+      /* Storefront: scale 0.15→1 from p=0→PA with easing */
+      const scale = lerp(0.15, 1, easeIO(norm(p, 0, PA)));
       currentScale = scale;
       syncAll(scale);
 
-      /* Storefront fades out (PC → PB); icon-group opacity also fades #glass-video inside */
-      const fadeOut = p >= PC ? 1 - clamp(norm(p, PC, PB), 0, 1) : 1;
+      /* Charcoal overlay + icon both fade 1→0 from PA→PB */
+      const fadeOut = 1 - norm(p, PA, PB);
+      charcoalOverlay.style.opacity = fadeOut;
       iconGroup.style.opacity = fadeOut;
 
-      /* Reel logo fades in once storefront is gone (PB → PLR) */
-      reelLogo.style.opacity = clamp(norm(p, PB, PLR), 0, 1);
+      /* Reel logo fades in PB→PC */
+      reelLogo.style.opacity = norm(p, PB, PC);
 
-      /* Reel video: hidden until storefront fades (0 → PC), then fades in (PC → PB),
-         then fades out with curtain (PE → 1) */
-      if (p < PC)       reelVideo.style.opacity = 0;
-      else if (p < PB)  reelVideo.style.opacity = clamp(norm(p, PC, PB), 0, 1);
-      else if (p < PE)  reelVideo.style.opacity = 1;
-      else              reelVideo.style.opacity = 1 - clamp(norm(p, PE, 1), 0, 1);
+      /* Curtain rises PC→1 */
+      curtain.style.height = norm(p, PC, 1) * CURTAIN_H + 'px';
 
-      /* Curtain sweeps up from bottom — checkerboard leads, cream fills above */
-      curtain.style.height = clamp(norm(p, PE, 1), 0, 1) * CURTAIN_H + 'px';
-
-      /* Nav appears once storefront is filling the frame */
-      if (p >= PB) {
-        nav.classList.add('visible', 'dark-bg');
-      } else {
-        nav.classList.remove('visible', 'dark-bg');
-      }
+      /* Nav appears once video is revealed */
+      if (p >= PB) nav.classList.add('visible', 'dark-bg');
+      else         nav.classList.remove('visible', 'dark-bg');
     },
   });
 
