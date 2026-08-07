@@ -102,7 +102,7 @@
     #hero-wrapper {
       position: relative;
       width: 100%;
-      height: calc(3000px + 100vh);
+      height: calc(8000px + 100vh);
     }
     #hero-sticky {
       position: sticky;
@@ -163,20 +163,6 @@
       background-size: 64px 64px;
       flex-shrink: 0;
     }
-    #curtain-tagline {
-      position: absolute;
-      bottom: 80px;
-      left: 60px;
-      right: 60px;
-      font-family: var(--font);
-      font-size: clamp(28px, 4vw, 56px);
-      font-weight: 900;
-      line-height: 1.1;
-      color: var(--liberty-blue);
-      text-transform: uppercase;
-      text-align: center;
-    }
-
     #scroll-label {
       position: absolute;
       bottom: 48px;
@@ -194,9 +180,28 @@
     }
 
     /* ── Sections paint above fixed hero layers ───────────────── */
-    #services, #work, #contact, footer {
+    #about, #services, #work, #contact, footer {
       position: relative;
       z-index: 10;
+    }
+
+    /* ── ABOUT ───────────────────────────────────────────────── */
+    #about { background: var(--powdered); }
+    #about-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 200px 40px;
+    }
+    #about-text {
+      font-family: var(--font);
+      font-size: clamp(28px, 4vw, 56px);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--liberty-blue);
+      text-transform: uppercase;
+      text-align: center;
+      max-width: 1100px;
     }
 
     /* ── SERVICES / WHAT WE DO ───────────────────────────────── */
@@ -365,10 +370,13 @@
       #contact { padding: 80px 24px; gap: 24px; }
 
       footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+
+      #about-inner { padding: 60px 24px 80px; }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
       #site-nav { padding: 20px 32px; }
+      #about-inner { padding: 80px 40px 100px; }
       #services { padding: 100px 40px; }
       #work { padding: 100px 40px; }
     }
@@ -409,13 +417,21 @@
 
     <div id="hero-curtain">
       <div class="check-stripe"></div>
-      <p id="curtain-tagline">We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy — napkin sketch Monday, doors open Friday.</p>
     </div>
 
     <div id="scroll-label" aria-hidden="true">Scroll</div>
 
   </div>
 </div>
+
+<!-- ── ABOUT ──────────────────────────────────────────────────── -->
+<section id="about">
+  <div id="about-inner">
+    <p id="about-text">
+      We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy — napkin sketch Monday, doors open Friday.
+    </p>
+  </div>
+</section>
 
 <!-- ── SERVICES / WHAT WE DO ──────────────────────────────────── -->
 <section id="services">
@@ -496,18 +512,18 @@ window.addEventListener('DOMContentLoaded', () => {
   const curtain    = document.getElementById('hero-curtain');
   const scrollLbl  = document.getElementById('scroll-label');
 
-  let CURTAIN_H = window.innerHeight;
-  window.addEventListener('resize', () => { CURTAIN_H = window.innerHeight; }, { passive: true });
+  let CURTAIN_H = window.innerHeight * 0.4;
+  window.addEventListener('resize', () => { CURTAIN_H = window.innerHeight * 0.4; }, { passive: true });
 
   const easeIO = gsap.parseEase('power2.inOut');
 
   /*
     Progress breakpoints (0 → 1):
     P0  0.10  anticipation ends, scale begins
-    P2  0.65  scale done; icon + window-hole fade begins, reel logo begins
-    P3  0.75  fade done, reel logo fully visible; curtain begins
+    P2  0.45  scale done; icon + window-hole fade begins, reel logo begins
+    P3  0.92  fade done, reel logo fully visible; curtain begins
   */
-  const P0 = 0.10, P2 = 0.65, P3 = 0.75;
+  const P0 = 0.10, P2 = 0.45, P3 = 0.92;
 
   /* Window pane as fraction of icon-group bounding rect.
      Derived from SVG path M24.5 60.7 H67.3 L67.5 129.1 L25.7 129.5 in 93×141 viewBox:
@@ -517,10 +533,10 @@ window.addEventListener('DOMContentLoaded', () => {
   ScrollTrigger.create({
     trigger:    '#hero-wrapper',
     start:      'top top',
-    end:        '+=3000',
+    end:        '+=8000',
     pin:        '#hero-sticky',
     pinSpacing: false,
-    scrub:      2,
+    scrub:      4,
     onUpdate(self) {
       const p = self.progress;
 
@@ -540,12 +556,12 @@ window.addEventListener('DOMContentLoaded', () => {
       windowHole.style.height = (r.height * WIN_H) + 'px';
 
       /* After zoom: icon + window-hole (box-shadow mask) both fade 1 → 0, revealing full video */
-      const fade = p >= P2 ? 1 - norm(p, P2, P3) : 1;
+      const fade = p >= P2 ? 1 - norm(p, P2, 0.72) : 1;
       iconGroup.style.opacity  = fade;
       windowHole.style.opacity = fade;
 
       /* Reel logo fades in P2 → P3 */
-      reelLogo.style.opacity = norm(p, P2, P3);
+      reelLogo.style.opacity = norm(p, 0.65, 0.78);
 
       /* Curtain rises P3 → 1; reel video fades out simultaneously */
       const curtainT = norm(p, P3, 1);
@@ -561,28 +577,25 @@ window.addEventListener('DOMContentLoaded', () => {
   // Reveal nav once the hero reel is fully visible (≈P2 = 65% of 3000px scroll = 1950px)
   ScrollTrigger.create({
     trigger: '#hero-wrapper',
-    start:   'top+=1950 top',
+    start:   'top+=5200 top',
     onEnter:     () => nav.classList.add('nav-visible'),
     onLeaveBack: () => nav.classList.remove('nav-visible'),
   });
 
+  const colorObs = new IntersectionObserver(
+    ([entry]) => nav.classList.toggle('nav-light', entry.isIntersecting),
+    { rootMargin: `0px 0px -${window.innerHeight - 80}px 0px`, threshold: 0 }
+  );
+  colorObs.observe(document.getElementById('about'));
 
   /* ── SCROLL REVEAL ANIMATIONS ─────────────────────────────── */
   const ST = { toggleActions: 'play none none none' };
 
-  /* Curtain tagline — fades in as the cream section fills the curtain */
-  gsap.fromTo('#curtain-tagline',
-    { opacity: 0 },
-    {
-      opacity: 1,
-      scrollTrigger: {
-        trigger: '#curtain-tagline',
-        start: 'top 80%',
-        end:   'top 40%',
-        scrub: true,
-      },
-    }
-  );
+  /* About */
+  gsap.from('#about-text', {
+    opacity: 0, y: 40, duration: 0.9, ease: 'power2.out',
+    scrollTrigger: { trigger: '#about-text', start: 'top 85%', ...ST },
+  });
 
   /* Services heading */
   gsap.from('#services .section-heading', {
@@ -625,6 +638,8 @@ window.addEventListener('DOMContentLoaded', () => {
     opacity: 0, y: 40, duration: 0.75, ease: 'power2.out', stagger: 0.15,
     scrollTrigger: { trigger: '#contact', start: 'top 85%', ...ST },
   });
+
+  ScrollTrigger.refresh();
 });
 </script>
 </body>
