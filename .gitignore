@@ -1,0 +1,7 @@
+# Videos — too large for GitHub, serve locally or via CDN
+*.mp4
+*.mov
+*.avi
+
+# macOS
+.DS_Store

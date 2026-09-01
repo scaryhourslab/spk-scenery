@@ -142,9 +142,10 @@
       pointer-events: none;
     }
     #reel-logo img {
-      width: min(480px, 62vw);
+      width: min(240px, 31vw);
       height: auto;
       max-width: none;
+      object-fit: contain;
     }
 
     /* Curtain — rises from bottom; checkerboard leads, cream fills body */
@@ -163,9 +164,13 @@
       background-size: 64px 64px;
       flex-shrink: 0;
     }
+    @keyframes pulse-fade {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
     #scroll-label {
       position: absolute;
-      bottom: 48px;
+      top: 75%;
       left: 50%;
       transform: translateX(-50%);
       z-index: 7;
@@ -176,7 +181,7 @@
       color: rgba(248,243,232,0.4);
       text-transform: uppercase;
       pointer-events: none;
-      will-change: opacity;
+      animation: pulse-fade 2s ease-in-out infinite;
     }
 
     /* ── Sections paint above fixed hero layers ───────────────── */
@@ -280,10 +285,13 @@
     /* ── FEATURED WORK ───────────────────────────────────────── */
     #work {
       background: var(--charcoal);
-      padding: 120px 64px;
+      padding: 120px 64px 30vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      z-index: 10;
+      will-change: transform;
     }
     #work .section-heading { margin-bottom: 64px; }
     #work-grid {
@@ -297,27 +305,60 @@
       overflow: hidden;
       aspect-ratio: 4 / 3;
       border-radius: 16px;
+      position: relative;
+      display: block;
+      text-decoration: none;
     }
     .work-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       max-width: none;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease;
     }
     .work-card:hover img { transform: scale(1.03); }
 
-    /* ── CONTACT ─────────────────────────────────────────────── */
+    /* ── SERVICES BOARD — pure CSS sticky ───────────────────── */
+    #board-spacer {
+      position: relative;
+      z-index: 1;
+      min-height: 300vh;
+      background: var(--liberty-blue);
+      margin-top: -100vh;
+      clear: both;
+    }
+    #board-sticky-inner {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #board-img {
+      width: 100vw;
+      height: auto;
+      display: block;
+      max-width: 50vw;
+      margin: 0 auto;
+    }
+
+    /* ── CONTACT (guest check image + CTA) ───────────────────── */
     #contact {
       background: var(--liberty-blue);
-      min-height: 60vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 36px;
+      gap: 48px;
       padding: 120px 48px;
       text-align: center;
+    }
+    #guest-check-img {
+      max-width: 500px;
+      width: 90%;
+      height: auto;
+      display: block;
     }
     #contact-cta {
       display: inline-block;
@@ -398,8 +439,8 @@
 </nav>
 
 <!-- ── HERO — fixed layers ────────────────────────────────────── -->
-<video id="reel-video" autoplay muted loop playsinline>
-  <source src="assets/reel.mp4" type="video/mp4">
+<video id="reel-video" autoplay muted playsinline>
+  <source src="assets/SPK-landingpg-reel.mp4" type="video/mp4">
 </video>
 <div id="window-hole" aria-hidden="true"></div>
 
@@ -412,14 +453,14 @@
     </div>
 
     <div id="reel-logo" aria-hidden="true">
-      <img src="assets/spk-reel-logo.svg" alt="SPK Scenery">
+      <img src="assets/Salt-Pepper-Ketchup-Logo2-landing.png" alt="SPK Scenery">
     </div>
 
     <div id="hero-curtain">
       <div class="check-stripe"></div>
     </div>
 
-    <div id="scroll-label" aria-hidden="true">Scroll</div>
+    <div id="scroll-label" aria-hidden="true">Scroll Down</div>
 
   </div>
 </div>
@@ -428,7 +469,7 @@
 <section id="about">
   <div id="about-inner">
     <p id="about-text">
-      We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy — napkin sketch Monday, doors open Friday.
+      We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy. We have the NY hustle like no one else. Our team will bring all imaginations to life.
     </p>
   </div>
 </section>
@@ -470,23 +511,31 @@
 <section id="work">
   <h2 class="section-heading">Featured Work</h2>
   <div id="work-grid">
-    <div class="work-card">
-      <img src="assets/featured-work-1.png" alt="Featured project 1" loading="lazy">
-    </div>
-    <div class="work-card">
-      <img src="assets/featured-work-2.png" alt="Featured project 2" loading="lazy">
-    </div>
-    <div class="work-card">
-      <img src="assets/featured-work-3.png" alt="Featured project 3" loading="lazy">
-    </div>
-    <div class="work-card">
-      <img src="assets/featured-work-4.png" alt="Featured project 4" loading="lazy">
-    </div>
+    <a class="work-card" href="case-study-1.html">
+      <img src="assets/Tyler-work-1.png" alt="Tyler The Creator" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-2.html">
+      <img src="assets/Bruno-work-2.png" alt="Bruno Mars" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-3.html">
+      <img src="assets/Gaga-work-3.png" alt="Lady Gaga" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-4.html">
+      <img src="assets/kanye-work-4.png" alt="Kanye West" loading="lazy">
+    </a>
   </div>
 </section>
 
-<!-- ── CONTACT ────────────────────────────────────────────────── -->
+<!-- ── SERVICES BOARD — sticky centered, scrolls with spacer ─────── -->
+<div id="board-spacer">
+  <div id="board-sticky-inner">
+    <img id="board-img" src="assets/Our-Services-Board.png" alt="Our Services">
+  </div>
+</div>
+
+<!-- ── CONTACT (guest check image + heading + CTA) ────────────── -->
 <section id="contact">
+  <img id="guest-check-img" src="assets/Guest-Check-Order.png" alt="">
   <h2 class="section-heading">Let's Build<br>Something</h2>
   <a id="contact-cta" href="mailto:hello@spkscenery.com">Get In Touch</a>
 </section>
@@ -516,6 +565,7 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => { CURTAIN_H = window.innerHeight * 0.4; }, { passive: true });
 
   const easeIO = gsap.parseEase('power2.inOut');
+
 
   /*
     Progress breakpoints (0 → 1):
@@ -570,6 +620,21 @@ window.addEventListener('DOMContentLoaded', () => {
     },
   });
   /* ── END HERO MECHANIC ────────────────────────────────────── */
+
+  /* ── HERO VIDEO ROTATION ─────────────────────────────────── */
+  const reelPlaylist = [
+    'assets/SPK-landingpg-reel.mp4',
+    'assets/TTC-video.mp4',
+    'assets/BrunoMars-Landing.mp4',
+    'assets/LadyGaga-Disease-Landing.mp4',
+    'assets/Kanye-West.mp4',
+  ];
+  let reelIdx = 0;
+  reelVideo.addEventListener('ended', () => {
+    reelIdx = (reelIdx + 1) % reelPlaylist.length;
+    reelVideo.src = reelPlaylist[reelIdx];
+    reelVideo.play();
+  });
 
   /* ── NAV VISIBILITY + COLOR ──────────────────────────────── */
   const nav = document.getElementById('site-nav');
@@ -634,9 +699,21 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   /* Contact */
-  gsap.from(['#contact .section-heading', '#contact-cta'], {
+  gsap.from(['#guest-check-img', '#contact .section-heading', '#contact-cta'], {
     opacity: 0, y: 40, duration: 0.75, ease: 'power2.out', stagger: 0.15,
     scrollTrigger: { trigger: '#contact', start: 'top 85%', ...ST },
+  });
+
+  /* ── SCROLL DOWN label fade ──────────────────────────────── */
+  gsap.to(scrollLbl, {
+    opacity: 0,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '#hero-wrapper',
+      start: 'top+=400 top',
+      end:   'top+=1200 top',
+      scrub: true,
+    },
   });
 
   ScrollTrigger.refresh();
