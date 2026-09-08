@@ -337,10 +337,9 @@
     }
     #board-img {
       width: 100vw;
-      height: auto;
+      height: 100vh;
+      object-fit: cover;
       display: block;
-      max-width: 50vw;
-      margin: 0 auto;
     }
 
     /* ── CONTACT (guest check image + CTA) ───────────────────── */
@@ -373,6 +372,55 @@
       transition: opacity 0.2s;
     }
     #contact-cta:hover { opacity: 0.82; }
+
+    /* ── BRANDS CAROUSEL ────────────────────────────────────── */
+    #brands {
+      background: var(--charcoal);
+      padding: 80px 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(248,243,232,0.06);
+    }
+    .brands-heading {
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(248,243,232,0.3);
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .brands-track-wrapper { overflow: hidden; }
+    @keyframes scroll-brands {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .brands-track {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+      width: max-content;
+      animation: scroll-brands 24s linear infinite;
+    }
+    .brands-track:hover { animation-play-state: paused; }
+    .brand-item {
+      flex-shrink: 0;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+    .brand-item:hover { opacity: 1; }
+    .brand-item img {
+      height: 100%;
+      width: auto;
+      max-width: none;
+    }
+    .black-logo {
+      filter: brightness(0) saturate(100%) invert(100%) sepia(10%) hue-rotate(0deg);
+    }
 
     /* ── FOOTER ──────────────────────────────────────────────── */
     footer {
@@ -439,7 +487,7 @@
 </nav>
 
 <!-- ── HERO — fixed layers ────────────────────────────────────── -->
-<video id="reel-video" autoplay muted playsinline>
+<video id="reel-video" autoplay muted loop playsinline>
   <source src="assets/reel.mp4" type="video/mp4">
 </video>
 <div id="window-hole" aria-hidden="true"></div>
@@ -471,6 +519,31 @@
     <p id="about-text">
       We're a crew of designers, builders, and fabricators who take the impossible deadline and make it look easy. We have the NY hustle like no one else. Our team will bring all imaginations to life.
     </p>
+  </div>
+</section>
+
+<!-- ── FEATURED WORK ──────────────────────────────────────────── -->
+<section id="work">
+  <h2 class="section-heading">Featured Work</h2>
+  <div id="work-grid">
+    <a class="work-card" href="case-study-1.html">
+      <img src="assets/Tyler-work-1.png" alt="Tyler The Creator" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-2.html">
+      <img src="assets/Bruno-work-2.png" alt="Bruno Mars" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-3.html">
+      <img src="assets/Gaga-work-3.png" alt="Lady Gaga" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-4.html">
+      <img src="assets/kanye-work-4.png" alt="Kanye West" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-6.html">
+      <img src="assets/fortnite-thumbnail.png" alt="Fortnite" loading="lazy">
+    </a>
+    <a class="work-card" href="case-study-5.html">
+      <img src="assets/american-idol-thumbnail.png" alt="American Idol" loading="lazy">
+    </a>
   </div>
 </section>
 
@@ -507,37 +580,63 @@
   </div>
 </section>
 
-<!-- ── FEATURED WORK ──────────────────────────────────────────── -->
-<section id="work">
-  <h2 class="section-heading">Featured Work</h2>
-  <div id="work-grid">
-    <a class="work-card" href="case-study-1.html">
-      <img src="assets/Tyler-work-1.png" alt="Tyler The Creator" loading="lazy">
-    </a>
-    <a class="work-card" href="case-study-2.html">
-      <img src="assets/Bruno-work-2.png" alt="Bruno Mars" loading="lazy">
-    </a>
-    <a class="work-card" href="case-study-3.html">
-      <img src="assets/Gaga-work-3.png" alt="Lady Gaga" loading="lazy">
-    </a>
-    <a class="work-card" href="case-study-4.html">
-      <img src="assets/kanye-work-4.png" alt="Kanye West" loading="lazy">
-    </a>
-  </div>
-</section>
-
 <!-- ── SERVICES BOARD — sticky centered, scrolls with spacer ─────── -->
 <div id="board-spacer">
   <div id="board-sticky-inner">
-    <img id="board-img" src="assets/Our-Services-Board.png" alt="Our Services">
+    <img id="board-img" src="assets/menu-services.png" alt="Our Services">
   </div>
 </div>
 
 <!-- ── CONTACT (guest check image + heading + CTA) ────────────── -->
 <section id="contact">
-  <img id="guest-check-img" src="assets/Guest-Check-Order.png" alt="">
+  <img id="guest-check-img" src="assets/SPKGuest-Check.png" alt="">
   <h2 class="section-heading">Let's Build<br>Something</h2>
   <a id="contact-cta" href="mailto:hello@spkscenery.com">Get In Touch</a>
+</section>
+
+<!-- ── BRANDS CAROUSEL ────────────────────────────────────────── -->
+<section id="brands">
+  <p class="brands-heading">Brands We've Worked With</p>
+  <div class="brands-track-wrapper">
+    <div class="brands-track">
+      <!-- Set 1 -->
+      <div class="brand-item"><img src="assets/abc-logo.png" alt="ABC"></div>
+      <div class="brand-item"><img src="assets/amazon-logo.png" alt="Amazon"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/bet-logo.png" alt="BET"></div>
+      <div class="brand-item"><img src="assets/disney-logo.png" alt="Disney"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/google-logo.png" alt="Google"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/hbo-logo.png" alt="HBO"></div>
+      <div class="brand-item"><img src="assets/honda-logo.png" alt="Honda"></div>
+      <div class="brand-item"><img src="assets/hulu-logo.png" alt="Hulu"></div>
+      <div class="brand-item"><img src="assets/lacoste-logo.png" alt="Lacoste"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/Marvel-logo.png" alt="Marvel"></div>
+      <div class="brand-item"><img src="assets/mcdonalds-logo.png" alt="McDonald's"></div>
+      <div class="brand-item"><img src="assets/mercedes-logo.png" alt="Mercedes"></div>
+      <div class="brand-item"><img src="assets/Meta-logo.png" alt="Meta"></div>
+      <div class="brand-item"><img src="assets/netflix-logo.png" alt="Netflix"></div>
+      <div class="brand-item"><img src="assets/samsung-logo.png" alt="Samsung"></div>
+      <div class="brand-item"><img src="assets/skims-logo.png" alt="Skims"></div>
+      <div class="brand-item"><img src="assets/thom-browne-logo.png" alt="Thom Browne"></div>
+      <!-- Set 2 — duplicate for seamless loop -->
+      <div class="brand-item"><img src="assets/abc-logo.png" alt="ABC"></div>
+      <div class="brand-item"><img src="assets/amazon-logo.png" alt="Amazon"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/bet-logo.png" alt="BET"></div>
+      <div class="brand-item"><img src="assets/disney-logo.png" alt="Disney"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/google-logo.png" alt="Google"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/hbo-logo.png" alt="HBO"></div>
+      <div class="brand-item"><img src="assets/honda-logo.png" alt="Honda"></div>
+      <div class="brand-item"><img src="assets/hulu-logo.png" alt="Hulu"></div>
+      <div class="brand-item"><img src="assets/lacoste-logo.png" alt="Lacoste"></div>
+      <div class="brand-item"><img class="black-logo" src="assets/Marvel-logo.png" alt="Marvel"></div>
+      <div class="brand-item"><img src="assets/mcdonalds-logo.png" alt="McDonald's"></div>
+      <div class="brand-item"><img src="assets/mercedes-logo.png" alt="Mercedes"></div>
+      <div class="brand-item"><img src="assets/Meta-logo.png" alt="Meta"></div>
+      <div class="brand-item"><img src="assets/netflix-logo.png" alt="Netflix"></div>
+      <div class="brand-item"><img src="assets/samsung-logo.png" alt="Samsung"></div>
+      <div class="brand-item"><img src="assets/skims-logo.png" alt="Skims"></div>
+      <div class="brand-item"><img src="assets/thom-browne-logo.png" alt="Thom Browne"></div>
+    </div>
+  </div>
 </section>
 
 <!-- ── FOOTER ─────────────────────────────────────────────────── -->
@@ -620,21 +719,6 @@ window.addEventListener('DOMContentLoaded', () => {
     },
   });
   /* ── END HERO MECHANIC ────────────────────────────────────── */
-
-  /* ── HERO VIDEO ROTATION ─────────────────────────────────── */
-  const reelPlaylist = [
-    'assets/reel.mp4',
-    'assets/TTC-video.mp4',
-    'assets/BrunoMars-Landing.mp4',
-    'assets/LadyGaga-Disease-Landing.mp4',
-    'assets/Kanye-West.mp4',
-  ];
-  let reelIdx = 0;
-  reelVideo.addEventListener('ended', () => {
-    reelIdx = (reelIdx + 1) % reelPlaylist.length;
-    reelVideo.src = reelPlaylist[reelIdx];
-    reelVideo.play();
-  });
 
   /* ── NAV VISIBILITY + COLOR ──────────────────────────────── */
   const nav = document.getElementById('site-nav');
