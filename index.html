@@ -73,8 +73,13 @@
       background: var(--kimchi) !important;
       color: var(--powdered) !important;
       padding: 10px 24px;
+      transition: opacity 0.2s, transform 80ms cubic-bezier(0.23, 1, 0.32, 1);
     }
     .nav-cta:hover { opacity: 0.85; }
+    .nav-cta:active {
+      transform: scale(0.97);
+      transition: opacity 0.2s, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
 
     /* ── HERO — fixed video + mask ───────────────────────────── */
     #reel-video {
@@ -111,6 +116,7 @@
       height: 100vh;
       overflow: hidden;
       z-index: 3;
+      will-change: transform;
     }
 
     /* Storefront icon — 1800px native; scaled down so browser never upscales */
@@ -291,7 +297,6 @@
       align-items: center;
       position: relative;
       z-index: 10;
-      will-change: transform;
     }
     #work .section-heading { margin-bottom: 64px; }
     #work-grid {
@@ -314,9 +319,11 @@
       height: 100%;
       object-fit: cover;
       max-width: none;
-      transition: transform 0.4s ease;
+      transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .work-card:hover img { transform: scale(1.03); }
+    @media (hover: hover) and (pointer: fine) {
+      .work-card:hover img { transform: scale(1.03); }
+    }
 
     /* ── SERVICES BOARD — pure CSS sticky ───────────────────── */
     #board-spacer {
@@ -369,9 +376,13 @@
       color: var(--powdered);
       background: var(--kimchi);
       padding: 18px 56px;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 80ms cubic-bezier(0.23, 1, 0.32, 1);
     }
     #contact-cta:hover { opacity: 0.82; }
+    #contact-cta:active {
+      transform: scale(0.97);
+      transition: opacity 0.2s, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
 
     /* ── BRANDS CAROUSEL ────────────────────────────────────── */
     #brands {
@@ -412,7 +423,9 @@
       opacity: 0.4;
       transition: opacity 0.2s;
     }
-    .brand-item:hover { opacity: 1; }
+    @media (hover: hover) and (pointer: fine) {
+      .brand-item:hover { opacity: 1; }
+    }
     .brand-item img {
       height: 100%;
       width: auto;
@@ -461,6 +474,7 @@
       footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
 
       #about-inner { padding: 60px 24px 80px; }
+      #hero-wrapper { height: calc(3500px + 100vh); }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
@@ -469,9 +483,67 @@
       #services { padding: 100px 40px; }
       #work { padding: 100px 40px; }
     }
+
+    /* ── PAGE LOADER ─────────────────────────────────────────── */
+    #site-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--charcoal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    #loader-logo {
+      width: 120px;
+      height: auto;
+      max-width: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .brands-track { animation: none; }
+      #scroll-label { animation: none; opacity: 0.4; }
+      #site-loader { display: none; }
+    }
   </style>
 </head>
 <body>
+
+<!-- ── PAGE LOADER ───────────────────────────────────────────── -->
+<div id="site-loader" aria-hidden="true">
+  <img id="loader-logo" src="assets/spk-scenery-sub-mark-1-powdered-rgb.svg" alt="" width="120" height="120">
+</div>
+<script>
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const loader = document.getElementById('site-loader');
+  const img    = document.getElementById('loader-logo');
+  const srcs   = [
+    'assets/spk-scenery-sub-mark-1-powdered-rgb.svg',
+    'assets/spk-scenery-sub-mark-2-powdered-rgb.svg',
+    'assets/spk-scenery-sub-mark-3-powdered-rgb.svg',
+    'assets/spk-scenery-sub-mark-4-powdered-rgb.svg',
+    'assets/spk-scenery-sub-mark-5-powdered-rgb.svg',
+    'assets/spk-scenery-sub-mark-6-powdered-rgb.svg',
+    'assets/spk-scenery-sub-mark-7-powdered-rgb.svg',
+  ];
+  let frame = 0;
+
+  const tick = setInterval(() => {
+    frame += 1;
+    if (frame < srcs.length) {
+      img.src = srcs[frame];
+    } else {
+      clearInterval(tick);
+      loader.style.opacity = '0';
+      setTimeout(() => loader.remove(), 400);
+    }
+  }, 300);
+}());
+</script>
 
 <!-- ── NAV ──────────────────────────────────────────────────── -->
 <nav id="site-nav">
@@ -583,7 +655,10 @@
 <!-- ── SERVICES BOARD — sticky centered, scrolls with spacer ─────── -->
 <div id="board-spacer">
   <div id="board-sticky-inner">
-    <img id="board-img" src="assets/menu-services.png" alt="Our Services">
+    <picture>
+      <source media="(max-width: 768px)" srcset="assets/menu-services-mobile.png">
+      <img id="board-img" src="assets/menu-services.png" alt="Our Services">
+    </picture>
   </div>
 </div>
 
@@ -648,7 +723,10 @@
 <script>
 window.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger);
+  gsap.ticker.lagSmoothing(0);
 
+  const rm       = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
   const norm = (v, lo, hi) => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
   const lerp = (a, b, t)   => a + (b - a) * t;
 
@@ -682,10 +760,10 @@ window.addEventListener('DOMContentLoaded', () => {
   ScrollTrigger.create({
     trigger:    '#hero-wrapper',
     start:      'top top',
-    end:        '+=8000',
+    end:        isMobile ? '+=3500' : '+=8000',
     pin:        '#hero-sticky',
     pinSpacing: false,
-    scrub:      4,
+    scrub:      isMobile ? 1.5 : 4,
     onUpdate(self) {
       const p = self.progress;
 
@@ -723,10 +801,10 @@ window.addEventListener('DOMContentLoaded', () => {
   /* ── NAV VISIBILITY + COLOR ──────────────────────────────── */
   const nav = document.getElementById('site-nav');
 
-  // Reveal nav once the hero reel is fully visible (≈P2 = 65% of 3000px scroll = 1950px)
+  // Reveal nav once ~65% of the hero wrapper has scrolled past — scales with viewport height
   ScrollTrigger.create({
     trigger: '#hero-wrapper',
-    start:   'top+=5200 top',
+    start:   'top+=65% top',
     onEnter:     () => nav.classList.add('nav-visible'),
     onLeaveBack: () => nav.classList.remove('nav-visible'),
   });
@@ -738,53 +816,55 @@ window.addEventListener('DOMContentLoaded', () => {
   colorObs.observe(document.getElementById('about'));
 
   /* ── SCROLL REVEAL ANIMATIONS ─────────────────────────────── */
-  const ST = { toggleActions: 'play none none none' };
+  const ST   = { toggleActions: 'play none none none' };
+  const revY = rm ? 0 : (isMobile ? 20 : 40);
 
   /* About */
   gsap.from('#about-text', {
-    opacity: 0, y: 40, duration: 0.9, ease: 'power2.out',
+    opacity: 0, y: revY, duration: isMobile ? 0.5 : 0.9, ease: 'power2.out',
     scrollTrigger: { trigger: '#about-text', start: 'top 85%', ...ST },
   });
 
   /* Services heading */
   gsap.from('#services .section-heading', {
-    opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
+    opacity: 0, y: revY, duration: isMobile ? 0.5 : 0.8, ease: 'power2.out',
     scrollTrigger: { trigger: '#services', start: 'top 85%', ...ST },
   });
 
   /* Storefront illustration — scrub scale+fade */
   gsap.from('#services-illus', {
-    opacity: 0, scale: 0.92, ease: 'power2.out',
+    opacity: 0, scale: rm ? 1 : 0.92, ease: 'power2.out',
     scrollTrigger: { trigger: '#services-storefront', start: 'top 85%', end: 'top 20%', scrub: true },
   });
 
   /* BUILT FRESH DAILY — stagger left to right */
   gsap.from('#process-tagline img', {
-    opacity: 0, x: -12, duration: 0.6, ease: 'power2.out', stagger: 0.12,
+    opacity: 0, x: rm ? 0 : -12, duration: isMobile ? 0.5 : 0.6, ease: 'power2.out', stagger: rm ? 0 : 0.12,
     scrollTrigger: { trigger: '#process-tagline', start: 'top 85%', ...ST },
   });
 
   /* Process columns — stagger left to right */
   gsap.from('.service-col', {
-    opacity: 0, y: 32, duration: 0.7, ease: 'power2.out', stagger: 0.15,
+    opacity: 0, y: rm ? 0 : 32, duration: isMobile ? 0.5 : 0.7, ease: 'power2.out', stagger: rm ? 0 : 0.15,
     scrollTrigger: { trigger: '#services-columns', start: 'top 85%', ...ST },
   });
 
   /* Featured work heading */
   gsap.from('#work .section-heading', {
-    opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
+    opacity: 0, y: revY, duration: isMobile ? 0.5 : 0.8, ease: 'power2.out',
     scrollTrigger: { trigger: '#work', start: 'top 85%', ...ST },
   });
 
   /* Featured work images — scale up + fade, staggered */
   gsap.from('.work-card', {
-    opacity: 0, scale: 0.95, y: 24, duration: 0.75, ease: 'power2.out', stagger: 0.15,
+    opacity: 0, scale: rm ? 1 : 0.95, y: rm ? 0 : 24, duration: isMobile ? 0.5 : 0.75, ease: 'power2.out',
+    stagger: rm ? 0 : (isMobile ? 0.08 : 0.15),
     scrollTrigger: { trigger: '#work-grid', start: 'top 85%', ...ST },
   });
 
   /* Contact */
   gsap.from(['#guest-check-img', '#contact .section-heading', '#contact-cta'], {
-    opacity: 0, y: 40, duration: 0.75, ease: 'power2.out', stagger: 0.15,
+    opacity: 0, y: revY, duration: isMobile ? 0.5 : 0.75, ease: 'power2.out', stagger: rm ? 0 : 0.15,
     scrollTrigger: { trigger: '#contact', start: 'top 85%', ...ST },
   });
 
