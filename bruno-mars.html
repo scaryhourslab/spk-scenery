@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SPK Scenery — Tyler The Creator</title>
+  <title>SPK Scenery — Bruno Mars</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,10 +71,9 @@
       transition: opacity 0.2s, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
     }
 
-    /* ── HERO — pinned video + credits curtain ───────────────── */
+    /* ── HERO ─────────────────────────────────────────────────── */
     #hero-wrapper {
       position: relative;
-      /* pin height = 100vh (video) + scroll distance for credits animation */
       height: calc(100vh + 600px);
     }
 
@@ -95,10 +94,10 @@
       z-index: 0;
     }
 
-    #hero-sticky::after {
-      content: '';
+    #hero-overlay {
       position: absolute;
-      inset: 0;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(13, 24, 44, 0.35);
       z-index: 1;
     }
@@ -138,7 +137,6 @@
       right: 0;
       z-index: 2;
       background: var(--powdered);
-      /* starts fully below the fold */
       transform: translateY(100%);
     }
 
@@ -245,7 +243,6 @@
       background: var(--charcoal);
     }
 
-    /* Shared image styles */
     .img-full {
       width: 100vw;
       height: 80vh;
@@ -282,6 +279,22 @@
       overflow: hidden;
     }
     .img-trio img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-width: none;
+    }
+
+    /* Extended 3-col grid for BrunoMars-1 through 21 */
+    .img-grid-many {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .img-grid-many > div {
+      height: 40vh;
+      overflow: hidden;
+    }
+    .img-grid-many img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -348,6 +361,9 @@
       .img-trio { grid-template-columns: 1fr; height: auto; }
       .img-trio > div { height: 50vw; }
 
+      .img-grid-many { grid-template-columns: 1fr; }
+      .img-grid-many > div { height: 50vw; }
+
       #next-project { padding: 72px 24px; }
     }
 
@@ -382,11 +398,13 @@
   <div id="hero-sticky">
 
     <video id="hero-video" autoplay muted loop playsinline>
-      <source src="assets/TTC-video.mp4" type="video/mp4">
+      <source src="assets/BrunoMars-Landing.mp4" type="video/mp4">
     </video>
 
+    <div id="hero-overlay"></div>
+
     <div id="hero-text">
-      <p class="hero-title">Tyler The Creator</p>
+      <p class="hero-title">Bruno Mars</p>
       <p class="hero-sub">Stage Design / Fabrication</p>
     </div>
 
@@ -395,7 +413,7 @@
 
         <div class="credit-col">
           <p class="credit-label">Client</p>
-          <p class="credit-client-name">Tyler The<br>Creator</p>
+          <p class="credit-client-name">Bruno Mars</p>
         </div>
 
         <div class="credit-col">
@@ -404,13 +422,12 @@
             <span class="credit-tag">Stage Design</span>
             <span class="credit-tag">Fabrication</span>
             <span class="credit-tag">Installation</span>
-            <span class="credit-tag">Art Direction</span>
           </div>
         </div>
 
         <div class="credit-col">
           <p class="credit-label">Project Summary</p>
-          <p class="credit-summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+          <p class="credit-summary">Set production for Bruno Mars.</p>
         </div>
 
       </div>
@@ -421,9 +438,9 @@
           <div class="budget-scale">
             <span class="budget-tier">$</span>
             <span class="budget-tier-sep">/</span>
-            <span class="budget-tier active">$$</span>
+            <span class="budget-tier">$$</span>
             <span class="budget-tier-sep">/</span>
-            <span class="budget-tier">$$$</span>
+            <span class="budget-tier active">$$$</span>
           </div>
         </div>
         <div class="budget-col"></div>
@@ -439,39 +456,64 @@
 
   <!-- 1: Full bleed -->
   <div class="img-full" id="g1">
-    <img src="assets/TTC-GolfLeFleur-1.png" alt="Tyler The Creator">
+    <img src="assets/1-BrunoMars.jpeg" alt="Bruno Mars">
   </div>
 
   <!-- 2 + 3: Side by side -->
   <div class="img-pair" id="g23">
-    <div><img src="assets/TTC-GolfLeFleur-2.png" alt="Tyler The Creator"></div>
-    <div><img src="assets/TTC-GolfLeFleur-3.png" alt="Tyler The Creator"></div>
+    <div><img src="assets/2-BrunoMars.jpeg" alt="Bruno Mars"></div>
+    <div><img src="assets/3-BrunoMars.jpeg" alt="Bruno Mars"></div>
   </div>
 
   <!-- 4: Full bleed -->
   <div class="img-full" id="g4">
-    <img src="assets/TTC-GolfLeFleur-4.png" alt="Tyler The Creator">
+    <img src="assets/4-BrunoMars.jpeg" alt="Bruno Mars">
   </div>
 
   <!-- 5 + 6 + 7: Three column -->
   <div class="img-trio" id="g567">
-    <div><img src="assets/TTC-GolfLeFleur-5.png" alt="Tyler The Creator"></div>
-    <div><img src="assets/TTC-GolfLeFleur-6.png" alt="Tyler The Creator"></div>
-    <div><img src="assets/TTC-GolfLeFleur-7.png" alt="Tyler The Creator"></div>
+    <div><img src="assets/5-BrunoMars.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/6-BrunoMars.PNG" alt="Bruno Mars"></div>
+    <div><img src="assets/7-BrunoMars.PNG" alt="Bruno Mars"></div>
   </div>
 
   <!-- 8 + 9: Side by side -->
   <div class="img-pair" id="g89">
-    <div><img src="assets/TTC-GolfLeFleur-8.png" alt="Tyler The Creator"></div>
-    <div><img src="assets/TTC-GolfLeFleur-9.png" alt="Tyler The Creator"></div>
+    <div><img src="assets/8-BrunoMars.PNG" alt="Bruno Mars"></div>
+    <div><img src="assets/9-BrunoMars.PNG" alt="Bruno Mars"></div>
+  </div>
+
+  <!-- BrunoMars-1 through BrunoMars-21: 3-col grid, 40vh rows -->
+  <div class="img-grid-many" id="g-extended">
+    <div><img src="assets/BrunoMars-1.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-2.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-3.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-4.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-5.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-6.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-7.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-8.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-9.jpg"  alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-10.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-11.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-12.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-13.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-14.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-15.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-16.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-17.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-18.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-19.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-20.jpg" alt="Bruno Mars"></div>
+    <div><img src="assets/BrunoMars-21.jpg" alt="Bruno Mars"></div>
   </div>
 
 </section>
 
 <!-- ── NEXT PROJECT ───────────────────────────────────────────── -->
-<a id="next-project" href="case-study-2.html">
+<a id="next-project" href="lady-gaga.html">
   <p class="next-label">Next Project →</p>
-  <p class="next-name">Bruno Mars</p>
+  <p class="next-name">Lady Gaga</p>
 </a>
 
 <script>
@@ -480,13 +522,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── CREDITS CURTAIN ────────────────────────────────────────
-     Pin the hero wrapper. As user scrolls, credits panel
-     slides up from translateY(100%) → translateY(0).
-  ─────────────────────────────────────────────────────────── */
-  const creditsPanel = document.getElementById('credits-panel');
-
-  gsap.to(creditsPanel, {
+  /* ── CREDITS CURTAIN ──────────────────────────────────────── */
+  gsap.to('#credits-panel', {
     yPercent: -100,
     ease: 'none',
     scrollTrigger: {
@@ -499,39 +536,38 @@ window.addEventListener('DOMContentLoaded', () => {
     },
   });
 
-  /* ── GALLERY FADE-INS ───────────────────────────────────────
-     Each row or group fades in (opacity + y) on scroll.
-  ─────────────────────────────────────────────────────────── */
+  /* ── GALLERY FADE-INS ─────────────────────────────────────── */
   const ST = { start: 'top 88%', toggleActions: 'play none none none' };
 
-  /* Image 1 — full bleed */
   gsap.from('#g1', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.9, ease: 'power2.out',
     scrollTrigger: { trigger: '#g1', ...ST },
   });
 
-  /* Images 2 + 3 — pair, staggered */
   gsap.from('#g23 > div', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12,
     scrollTrigger: { trigger: '#g23', ...ST },
   });
 
-  /* Image 4 — full bleed */
   gsap.from('#g4', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.9, ease: 'power2.out',
     scrollTrigger: { trigger: '#g4', ...ST },
   });
 
-  /* Images 5 + 6 + 7 — trio, staggered */
   gsap.from('#g567 > div', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.8, ease: 'power2.out', stagger: rm ? 0 : 0.1,
     scrollTrigger: { trigger: '#g567', ...ST },
   });
 
-  /* Images 8 + 9 — pair, staggered */
   gsap.from('#g89 > div', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12,
     scrollTrigger: { trigger: '#g89', ...ST },
+  });
+
+  /* Extended grid — stagger all 21 cells */
+  gsap.from('#g-extended > div', {
+    opacity: 0, y: rm ? 0 : 30, duration: 0.75, ease: 'power2.out', stagger: rm ? 0 : 0.06,
+    scrollTrigger: { trigger: '#g-extended', start: 'top 88%', toggleActions: 'play none none none' },
   });
 
   ScrollTrigger.refresh();

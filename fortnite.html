@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SPK Scenery — American Idol</title>
+  <title>SPK Scenery — Fortnite</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,24 +31,16 @@
 
     /* ── NAV ─────────────────────────────────────────────────── */
     #site-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 24px 48px;
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 200; display: flex; align-items: center;
+      justify-content: space-between; padding: 24px 48px;
     }
     .nav-brand img { height: 48px; width: auto; max-width: none; }
     .nav-links { display: flex; align-items: center; gap: 32px; }
     .nav-links a {
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--powdered);
-      transition: color 0.2s;
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--powdered); transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--kimchi); }
     .nav-cta { background: var(--kimchi) !important; color: var(--powdered) !important; padding: 10px 24px; transition: opacity 0.2s, transform 80ms cubic-bezier(0.23, 1, 0.32, 1); }
@@ -66,14 +58,12 @@
       z-index: 2; text-align: center; pointer-events: none;
     }
     #hero-text .hero-title {
-      font-family: var(--font);
-      font-size: clamp(56px, 9vw, 130px);
-      font-weight: 900; line-height: 1;
-      text-transform: uppercase; color: var(--powdered); white-space: nowrap;
+      font-family: var(--font); font-size: clamp(56px, 9vw, 130px);
+      font-weight: 900; line-height: 1; text-transform: uppercase;
+      color: var(--powdered); white-space: nowrap;
     }
     #hero-text .hero-sub {
-      font-family: var(--font);
-      font-size: 12px; font-weight: 700;
+      font-family: var(--font); font-size: 12px; font-weight: 700;
       letter-spacing: 0.32em; text-transform: uppercase;
       color: rgba(248,243,232,0.55); margin-top: 14px;
     }
@@ -137,13 +127,18 @@
     .img-trio { display: grid; grid-template-columns: repeat(3, 1fr); height: 50vh; }
     .img-trio > div { overflow: hidden; }
     .img-trio img { width: 100%; height: 100%; object-fit: cover; max-width: none; }
+    .img-video-full {
+      width: 100vw; height: 80vh; overflow: hidden; position: relative;
+    }
+    .img-video-full video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
 
     /* ── NEXT PROJECT ─────────────────────────────────────────── */
     #next-project {
       display: block; width: 100%; background: var(--liberty-blue);
       padding: 100px 64px; text-align: center;
-      border-top: 1px solid rgba(248,243,232,0.06);
-      transition: background-color 0.3s;
+      border-top: 1px solid rgba(248,243,232,0.06); transition: background-color 0.3s;
     }
     .next-label {
       font-family: var(--font); font-size: 11px; font-weight: 700;
@@ -207,13 +202,13 @@
   <div id="hero-sticky">
 
     <video id="hero-video" autoplay muted loop playsinline>
-      <source src="assets/AmericanIdol-Reel.mp4" type="video/mp4">
+      <source src="assets/Fortnite-Reel.mp4" type="video/mp4">
     </video>
 
     <div id="hero-overlay"></div>
 
     <div id="hero-text">
-      <p class="hero-title">American Idol</p>
+      <p class="hero-title">Fortnite</p>
       <p class="hero-sub">Stage Design / Fabrication / Installation</p>
     </div>
 
@@ -222,7 +217,7 @@
 
         <div class="credit-col">
           <p class="credit-label">Client</p>
-          <p class="credit-client-name">American<br>Idol</p>
+          <p class="credit-client-name">Fortnite</p>
         </div>
 
         <div class="credit-col">
@@ -236,7 +231,7 @@
 
         <div class="credit-col">
           <p class="credit-label">Project Summary</p>
-          <p class="credit-summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+          <p class="credit-summary">Day in the life of our Spawn Island Manager. Fortnite Chapter 7 Season 2: Showdown.</p>
         </div>
 
       </div>
@@ -247,9 +242,9 @@
           <div class="budget-scale">
             <span class="budget-tier">$</span>
             <span class="budget-tier-sep">/</span>
-            <span class="budget-tier active">$$</span>
+            <span class="budget-tier">$$</span>
             <span class="budget-tier-sep">/</span>
-            <span class="budget-tier">$$$</span>
+            <span class="budget-tier active">$$$</span>
           </div>
         </div>
         <div class="budget-col"></div>
@@ -263,41 +258,36 @@
 <!-- ── GALLERY ────────────────────────────────────────────────── -->
 <section id="gallery">
 
-  <div class="img-full" id="g1">
-    <img src="assets/AmericanIdol-bts-1.png" alt="American Idol">
+  <!-- 0: Full bleed -->
+  <div class="img-full" id="g0">
+    <img src="assets/Fortnite-0.jpg" alt="Fortnite">
   </div>
 
-  <div class="img-pair" id="g23">
-    <div><img src="assets/AmericanIdol-bts-2.png" alt="American Idol"></div>
-    <div><img src="assets/AmericanIdol-bts-3.png" alt="American Idol"></div>
+  <!-- 1 + 2: Side by side -->
+  <div class="img-pair" id="g12">
+    <div><img src="assets/Fortnite-1.JPG" alt="Fortnite"></div>
+    <div><img src="assets/Fortnite-2.JPG" alt="Fortnite"></div>
   </div>
 
-  <div class="img-full" id="g4">
-    <img src="assets/AmericanIdol-bts-4.png" alt="American Idol">
+  <!-- 3: Full-bleed video -->
+  <div class="img-video-full" id="g3">
+    <video autoplay muted loop playsinline>
+      <source src="assets/Fortnite-3.MP4" type="video/mp4">
+    </video>
   </div>
 
-  <div class="img-trio" id="g567">
-    <div><img src="assets/AmericanIdol-bts-5.png" alt="American Idol"></div>
-    <div><img src="assets/AmericanIdol-bts-6.png" alt="American Idol"></div>
-    <div><img src="assets/AmericanIdol-bts-7.png" alt="American Idol"></div>
-  </div>
-
-  <div class="img-pair" id="g89">
-    <div><img src="assets/AmericanIdol-bts-8.png" alt="American Idol"></div>
-    <div><img src="assets/AmericanIdol-bts-9.png" alt="American Idol"></div>
-  </div>
-
-  <div class="img-pair" id="g1011">
-    <div><img src="assets/AmericanIdol-bts-10.png" alt="American Idol"></div>
-    <div><img src="assets/AmericanIdol-bts-11.png" alt="American Idol"></div>
+  <!-- 4 + 5: Side by side -->
+  <div class="img-pair" id="g45">
+    <div><img src="assets/Fortnite-4.jpeg" alt="Fortnite"></div>
+    <div><img src="assets/fortnite-5.png" alt="Fortnite"></div>
   </div>
 
 </section>
 
 <!-- ── NEXT PROJECT ───────────────────────────────────────────── -->
-<a id="next-project" href="case-study-6.html">
+<a id="next-project" href="american-idol.html">
   <p class="next-label">Next Project →</p>
-  <p class="next-name">Fortnite</p>
+  <p class="next-name">American Idol</p>
 </a>
 
 <script>
@@ -322,12 +312,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const ST = { start: 'top 88%', toggleActions: 'play none none none' };
 
-  gsap.from('#g1', { opacity: 0, y: rm ? 0 : 30, duration: 0.9, ease: 'power2.out', scrollTrigger: { trigger: '#g1', ...ST } });
-  gsap.from('#g23 > div', { opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12, scrollTrigger: { trigger: '#g23', ...ST } });
-  gsap.from('#g4', { opacity: 0, y: rm ? 0 : 30, duration: 0.9, ease: 'power2.out', scrollTrigger: { trigger: '#g4', ...ST } });
-  gsap.from('#g567 > div', { opacity: 0, y: rm ? 0 : 30, duration: 0.8, ease: 'power2.out', stagger: rm ? 0 : 0.1, scrollTrigger: { trigger: '#g567', ...ST } });
-  gsap.from('#g89 > div', { opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12, scrollTrigger: { trigger: '#g89', ...ST } });
-  gsap.from('#g1011 > div', { opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12, scrollTrigger: { trigger: '#g1011', ...ST } });
+  gsap.from('#g0',       { opacity: 0, y: rm ? 0 : 30, duration: 0.9,  ease: 'power2.out', scrollTrigger: { trigger: '#g0',  ...ST } });
+  gsap.from('#g12 > div',{ opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12, scrollTrigger: { trigger: '#g12', ...ST } });
+  gsap.from('#g3',       { opacity: 0, y: rm ? 0 : 30, duration: 0.9,  ease: 'power2.out', scrollTrigger: { trigger: '#g3',  ...ST } });
+  gsap.from('#g45 > div',{ opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12, scrollTrigger: { trigger: '#g45', ...ST } });
 
   ScrollTrigger.refresh();
 });

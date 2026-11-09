@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SPK Scenery — Kanye West</title>
+  <title>SPK Scenery — Tyler The Creator</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,6 +74,7 @@
     /* ── HERO — pinned video + credits curtain ───────────────── */
     #hero-wrapper {
       position: relative;
+      /* pin height = 100vh (video) + scroll distance for credits animation */
       height: calc(100vh + 600px);
     }
 
@@ -94,10 +95,10 @@
       z-index: 0;
     }
 
-    #hero-overlay {
+    #hero-sticky::after {
+      content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      inset: 0;
       background: rgba(13, 24, 44, 0.35);
       z-index: 1;
     }
@@ -137,6 +138,7 @@
       right: 0;
       z-index: 2;
       background: var(--powdered);
+      /* starts fully below the fold */
       transform: translateY(100%);
     }
 
@@ -243,6 +245,7 @@
       background: var(--charcoal);
     }
 
+    /* Shared image styles */
     .img-full {
       width: 100vw;
       height: 80vh;
@@ -379,13 +382,11 @@
   <div id="hero-sticky">
 
     <video id="hero-video" autoplay muted loop playsinline>
-      <source src="assets/Kanye-West.mp4" type="video/mp4">
+      <source src="assets/TTC-video.mp4" type="video/mp4">
     </video>
 
-    <div id="hero-overlay"></div>
-
     <div id="hero-text">
-      <p class="hero-title">Kanye West</p>
+      <p class="hero-title">Tyler The Creator</p>
       <p class="hero-sub">Stage Design / Fabrication</p>
     </div>
 
@@ -394,7 +395,7 @@
 
         <div class="credit-col">
           <p class="credit-label">Client</p>
-          <p class="credit-client-name">Kanye<br>West</p>
+          <p class="credit-client-name">Tyler The<br>Creator</p>
         </div>
 
         <div class="credit-col">
@@ -403,12 +404,13 @@
             <span class="credit-tag">Stage Design</span>
             <span class="credit-tag">Fabrication</span>
             <span class="credit-tag">Installation</span>
+            <span class="credit-tag">Art Direction</span>
           </div>
         </div>
 
         <div class="credit-col">
           <p class="credit-label">Project Summary</p>
-          <p class="credit-summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+          <p class="credit-summary">Pop up for Golf Le Fleur and Tyler the Creator.</p>
         </div>
 
       </div>
@@ -419,9 +421,9 @@
           <div class="budget-scale">
             <span class="budget-tier">$</span>
             <span class="budget-tier-sep">/</span>
-            <span class="budget-tier">$$</span>
+            <span class="budget-tier active">$$</span>
             <span class="budget-tier-sep">/</span>
-            <span class="budget-tier active">$$$</span>
+            <span class="budget-tier">$$$</span>
           </div>
         </div>
         <div class="budget-col"></div>
@@ -437,39 +439,39 @@
 
   <!-- 1: Full bleed -->
   <div class="img-full" id="g1">
-    <img src="assets/Kanye-1.jpg" alt="Kanye West">
+    <img src="assets/TTC-GolfLeFleur-1.png" alt="Tyler The Creator">
   </div>
 
   <!-- 2 + 3: Side by side -->
   <div class="img-pair" id="g23">
-    <div><img src="assets/Kanye-2.jpg" alt="Kanye West"></div>
-    <div><img src="assets/Kanye-3.jpg" alt="Kanye West"></div>
+    <div><img src="assets/TTC-GolfLeFleur-2.png" alt="Tyler The Creator"></div>
+    <div><img src="assets/TTC-GolfLeFleur-3.png" alt="Tyler The Creator"></div>
   </div>
 
   <!-- 4: Full bleed -->
   <div class="img-full" id="g4">
-    <img src="assets/Kanye-4.jpg" alt="Kanye West">
+    <img src="assets/TTC-GolfLeFleur-4.png" alt="Tyler The Creator">
   </div>
 
   <!-- 5 + 6 + 7: Three column -->
   <div class="img-trio" id="g567">
-    <div><img src="assets/Kanye-5.jpg" alt="Kanye West"></div>
-    <div><img src="assets/Kanye-6.jpg" alt="Kanye West"></div>
-    <div><img src="assets/Kanye-7.jpg" alt="Kanye West"></div>
+    <div><img src="assets/TTC-GolfLeFleur-5.png" alt="Tyler The Creator"></div>
+    <div><img src="assets/TTC-GolfLeFleur-6.png" alt="Tyler The Creator"></div>
+    <div><img src="assets/TTC-GolfLeFleur-7.png" alt="Tyler The Creator"></div>
   </div>
 
   <!-- 8 + 9: Side by side -->
   <div class="img-pair" id="g89">
-    <div><img src="assets/Kanye-8.jpg" alt="Kanye West"></div>
-    <div><img src="assets/Kanye-9.jpg" alt="Kanye West"></div>
+    <div><img src="assets/TTC-GolfLeFleur-8.png" alt="Tyler The Creator"></div>
+    <div><img src="assets/TTC-GolfLeFleur-9.png" alt="Tyler The Creator"></div>
   </div>
 
 </section>
 
 <!-- ── NEXT PROJECT ───────────────────────────────────────────── -->
-<a id="next-project" href="case-study-1.html">
+<a id="next-project" href="bruno-mars.html">
   <p class="next-label">Next Project →</p>
-  <p class="next-name">Tyler The Creator</p>
+  <p class="next-name">Bruno Mars</p>
 </a>
 
 <script>
@@ -478,7 +480,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── CREDITS CURTAIN ─────────────────────────────────────── */
+  /* ── CREDITS CURTAIN ────────────────────────────────────────
+     Pin the hero wrapper. As user scrolls, credits panel
+     slides up from translateY(100%) → translateY(0).
+  ─────────────────────────────────────────────────────────── */
   const creditsPanel = document.getElementById('credits-panel');
 
   gsap.to(creditsPanel, {
@@ -494,29 +499,36 @@ window.addEventListener('DOMContentLoaded', () => {
     },
   });
 
-  /* ── GALLERY FADE-INS ────────────────────────────────────── */
+  /* ── GALLERY FADE-INS ───────────────────────────────────────
+     Each row or group fades in (opacity + y) on scroll.
+  ─────────────────────────────────────────────────────────── */
   const ST = { start: 'top 88%', toggleActions: 'play none none none' };
 
+  /* Image 1 — full bleed */
   gsap.from('#g1', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.9, ease: 'power2.out',
     scrollTrigger: { trigger: '#g1', ...ST },
   });
 
+  /* Images 2 + 3 — pair, staggered */
   gsap.from('#g23 > div', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12,
     scrollTrigger: { trigger: '#g23', ...ST },
   });
 
+  /* Image 4 — full bleed */
   gsap.from('#g4', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.9, ease: 'power2.out',
     scrollTrigger: { trigger: '#g4', ...ST },
   });
 
+  /* Images 5 + 6 + 7 — trio, staggered */
   gsap.from('#g567 > div', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.8, ease: 'power2.out', stagger: rm ? 0 : 0.1,
     scrollTrigger: { trigger: '#g567', ...ST },
   });
 
+  /* Images 8 + 9 — pair, staggered */
   gsap.from('#g89 > div', {
     opacity: 0, y: rm ? 0 : 30, duration: 0.85, ease: 'power2.out', stagger: rm ? 0 : 0.12,
     scrollTrigger: { trigger: '#g89', ...ST },

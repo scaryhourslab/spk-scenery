@@ -124,7 +124,7 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%) scale(0.07);
+      transform: translate(-50%, -50%) scale(0.105);
       transform-origin: center center;
       z-index: 3;
       pointer-events: none;
@@ -174,12 +174,44 @@
       0%, 100% { opacity: 0; }
       50% { opacity: 1; }
     }
-    #scroll-label {
+
+    /* Hero intro — logo + tagline overlay, fades in on load, out on scroll */
+    #hero-intro {
       position: absolute;
-      top: 75%;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+    #hero-intro-logo {
+      position: absolute;
+      bottom: calc(50% + 190px);
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 220px;
+      height: auto;
+      opacity: 0;
+    }
+    #hero-intro-tagline {
+      position: absolute;
+      top: calc(50% + 185px);
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 280px;
+      height: auto;
+      opacity: 0;
+    }
+
+    /* Scroll label — wrap holds GSAP fade-in; inner keeps scroll-mechanic opacity control */
+    #scroll-label-wrap {
+      position: absolute;
+      top: calc(75% + 40px);
       left: 50%;
       transform: translateX(-50%);
       z-index: 7;
+      pointer-events: none;
+      opacity: 0;
+    }
+    #scroll-label {
       font-family: var(--font);
       font-size: 11px;
       font-weight: 700;
@@ -506,6 +538,7 @@
       .brands-track { animation: none; }
       #scroll-label { animation: none; opacity: 0.4; }
       #site-loader { display: none; }
+      #hero-intro-logo, #hero-intro-tagline, #scroll-label-wrap { opacity: 1; }
     }
   </style>
 </head>
@@ -568,6 +601,11 @@
 <div id="hero-wrapper">
   <div id="hero-sticky">
 
+    <div id="hero-intro" aria-hidden="true">
+      <img id="hero-intro-logo" src="assets/SaltPepperKetchup-landing.png" alt="SPK Scenery">
+      <img id="hero-intro-tagline" src="assets/builtfreshdaily-landing.png" alt="Built Fresh Daily">
+    </div>
+
     <div id="icon-group" aria-hidden="true">
       <img src="assets/landing-storefront-logo.svg" alt="">
     </div>
@@ -580,7 +618,9 @@
       <div class="check-stripe"></div>
     </div>
 
-    <div id="scroll-label" aria-hidden="true">Scroll Down</div>
+    <div id="scroll-label-wrap">
+      <div id="scroll-label" aria-hidden="true">Scroll Down</div>
+    </div>
 
   </div>
 </div>
@@ -598,22 +638,22 @@
 <section id="work">
   <h2 class="section-heading">Featured Work</h2>
   <div id="work-grid">
-    <a class="work-card" href="case-study-1.html">
+    <a class="work-card" href="tyler-the-creator.html">
       <img src="assets/Tyler-work-1.png" alt="Tyler The Creator" loading="lazy">
     </a>
-    <a class="work-card" href="case-study-2.html">
+    <a class="work-card" href="bruno-mars.html">
       <img src="assets/Bruno-work-2.png" alt="Bruno Mars" loading="lazy">
     </a>
-    <a class="work-card" href="case-study-3.html">
+    <a class="work-card" href="lady-gaga.html">
       <img src="assets/Gaga-work-3.png" alt="Lady Gaga" loading="lazy">
     </a>
-    <a class="work-card" href="case-study-4.html">
+    <a class="work-card" href="kanye-west.html">
       <img src="assets/kanye-work-4.png" alt="Kanye West" loading="lazy">
     </a>
-    <a class="work-card" href="case-study-6.html">
-      <img src="assets/fortnite-thumbnail.png" alt="Fortnite" loading="lazy">
+    <a class="work-card" href="fortnite.html">
+      <img src="assets/Fortnite-cover.png" alt="Fortnite" loading="lazy">
     </a>
-    <a class="work-card" href="case-study-5.html">
+    <a class="work-card" href="american-idol.html">
       <img src="assets/american-idol-thumbnail.png" alt="American Idol" loading="lazy">
     </a>
   </div>
@@ -770,8 +810,8 @@ window.addEventListener('DOMContentLoaded', () => {
       /* Scroll label fades at very start */
       scrollLbl.style.opacity = 1 - norm(p, 0, 0.12);
 
-      /* Icon scales 0.07 → 1.0 from P0 → P2; SVG renders at 1800px so we're always scaling down */
-      const scale = lerp(0.07, 1.0, easeIO(norm(p, P0, P2)));
+      /* Icon scales 0.105 → 1.0 from P0 → P2; SVG renders at 1800px so we're always scaling down */
+      const scale = lerp(0.105, 1.0, easeIO(norm(p, P0, P2)));
       iconGroup.style.transform = `translate(-50%, -50%) scale(${scale})`;
 
       /* Position window-hole to match the glass pane in screen coordinates.
@@ -797,6 +837,38 @@ window.addEventListener('DOMContentLoaded', () => {
     },
   });
   /* ── END HERO MECHANIC ────────────────────────────────────── */
+
+  /* ── HERO PAGE-LOAD INTRO + SCROLL FADE-OUT ──────────────── */
+  if (!rm) {
+    gsap.timeline({ delay: 0.5 })
+      .fromTo('#hero-intro-logo',
+        { opacity: 0, y: -20 },
+        { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
+      )
+      .fromTo('#hero-intro-tagline',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+        '+=0.3'
+      )
+      .fromTo('#scroll-label-wrap',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.6, ease: 'power2.out' },
+        '+=0.5'
+      );
+
+    const scrollRange = isMobile ? 3500 : 8000;
+    gsap.to(['#hero-intro-logo', '#hero-intro-tagline'], {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero-wrapper',
+        start: 'top+=' + (scrollRange * 0.03) + 'px top',
+        end:   'top+=' + (scrollRange * 0.08) + 'px top',
+        scrub: true,
+      },
+    });
+  }
+  /* ── END HERO INTRO ────────────────────────────────────────── */
 
   /* ── NAV VISIBILITY + COLOR ──────────────────────────────── */
   const nav = document.getElementById('site-nav');
