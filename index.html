@@ -731,6 +731,9 @@
     <a class="work-card" href="tyler-the-creator.html">
       <img src="assets/Tyler-work-1.png" alt="Tyler The Creator" loading="lazy">
     </a>
+    <a class="work-card" href="tyler-golf-le-fleur.html">
+      <img src="assets/Tyler-GLF-Thumbnail.png" alt="Tyler The Creator - Golf Le Fleur" loading="lazy">
+    </a>
     <a class="work-card" href="bruno-mars.html">
       <img src="assets/Bruno-work-2.png" alt="Bruno Mars" loading="lazy">
     </a>
@@ -1110,6 +1113,14 @@ window.addEventListener('load', () => {
   });
 })();
 
+</script>
+<script>
+  window.addEventListener('load', () => {
+    if (location.hash) {
+      const el = document.querySelector(location.hash);
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 300);
+    }
+  });
 </script>
 </body>
 </html>
