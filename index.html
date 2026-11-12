@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
@@ -381,7 +381,7 @@
       display: block;
     }
 
-    /* ── CONTACT (guest check image + CTA) ───────────────────── */
+    /* ── CONTACT (interactive guest check form) ──────────────── */
     #contact {
       background: var(--liberty-blue);
       display: flex;
@@ -392,28 +392,113 @@
       padding: 120px 48px;
       text-align: center;
     }
-    #guest-check-img {
-      max-width: 500px;
-      width: 90%;
-      height: auto;
+    .check {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      aspect-ratio: 677 / 1200;
+      transform: rotate(-0.3deg);
+      box-shadow: 3px 5px 32px rgba(0,0,0,0.6);
+      overflow: hidden;
+    }
+    .check-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: fill;
       display: block;
     }
-    #contact-cta {
-      display: inline-block;
+    .check-header {
+      position: absolute;
+      top: 22%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      pointer-events: none;
+    }
+    .lbl {
+      position: absolute;
+      left: 16.04%;
+      display: flex;
+      align-items: center;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .lbl img { height: 25px; width: auto; max-width: 130px; display: block; }
+    .fld {
+      position: absolute;
+      background: transparent;
+      border: none;
+      outline: none;
       font-family: var(--font);
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--powdered);
+      font-size: clamp(12px, 3.5vw, 16px);
+      color: #1a2340;
+      padding: 0 6px;
+      transform: translateY(-50%);
+      height: 29px;
+      right: 3%;
+    }
+    .fld::placeholder { color: rgba(45,111,168,0.45); font-style: italic; }
+    .fld-select {
+      position: absolute;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: clamp(12px, 3.5vw, 16px);
+      color: rgba(45,111,168,0.45);
+      font-style: italic;
+      padding: 0 4px;
+      transform: translateY(-50%);
+      width: auto;
+      cursor: pointer;
+    }
+    .fld-select:valid, .fld-select.has-value { color: #1a2340; font-style: normal; }
+    .fld-select option { color: #1a2340; font-style: normal; background: #fff; }
+    .fld-textarea {
+      transform: none;
+      position: absolute;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: clamp(12px,3.5vw,16px);
+      color: #1a2340;
+      padding: 2px 6px;
+      resize: none;
+      left: 38.04%; right: 3%;
+    }
+    .fld-textarea::placeholder { color: rgba(45,111,168,0.45); font-style: italic; }
+    .check-submit {
+      position: absolute;
       background: var(--kimchi);
-      padding: 18px 56px;
+      color: var(--powdered);
+      border: none;
+      font-family: var(--font);
+      font-size: clamp(10px, 2.5vw, 13px);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 7px 18px;
+      cursor: pointer;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 24%;
       transition: opacity 0.2s, transform 80ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    #contact-cta:hover { opacity: 0.82; }
-    #contact-cta:active {
-      transform: scale(0.97);
+    .check-submit:hover { opacity: 0.85; }
+    .check-submit:active {
+      transform: translateX(-50%) scale(0.97);
       transition: opacity 0.2s, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    #contact-success {
+      display: none;
+      font-family: var(--font);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--powdered);
+      text-transform: uppercase;
     }
 
     /* ── BRANDS CAROUSEL ────────────────────────────────────── */
@@ -501,7 +586,12 @@
       #work { padding: 80px 24px; }
       #work-grid { grid-template-columns: 1fr; gap: 12px; }
 
-      #contact { padding: 80px 24px; gap: 24px; }
+      #contact { padding: 60px 16px; gap: 24px; }
+      .check { max-width: 340px; }
+      .lbl img { height: 20px; }
+      .fld { font-size: 13px; height: 24px; }
+      .fld-select { font-size: 13px; }
+      .fld-textarea { font-size: 13px; }
 
       footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
 
@@ -702,11 +792,43 @@
   </div>
 </div>
 
-<!-- ── CONTACT (guest check image + heading + CTA) ────────────── -->
+<!-- ── CONTACT (interactive guest check form) ─────────────────── -->
 <section id="contact">
-  <img id="guest-check-img" src="assets/SPKGuest-Check.png" alt="">
   <h2 class="section-heading">Let's Build<br>Something</h2>
-  <a id="contact-cta" href="mailto:hello@spkscenery.com">Get In Touch</a>
+
+  <form id="contact-form" class="check" action="https://formspree.io/f/hello@spkscenery.com" method="POST">
+    <img class="check-bg" src="assets/SPKGuest-Check-Form.png" alt="">
+    <img class="check-header" src="assets/Guest-Check-Order.png" alt="What's your order?">
+
+    <div class="lbl" style="top:37.85%"><img src="assets/label-client_name.png" alt="Client Name"></div>
+    <input class="fld" name="client_name" type="text" placeholder="your name" style="top:37.85%;left:41.21%" required>
+
+    <div class="lbl" style="top:41.90%"><img src="assets/label-company.png" alt="Company"></div>
+    <input class="fld" name="company" type="text" placeholder="your company" style="top:41.90%;left:35.75%">
+
+    <div class="lbl" style="top:46.07%"><img src="assets/label-service.png" alt="Service"></div>
+    <select class="fld-select" name="service" style="top:46.07%;left:35.46%" required>
+      <option value="" disabled selected>type of service</option>
+      <option value="Stage Design">Stage Design</option>
+      <option value="Fabrication">Fabrication</option>
+      <option value="Event Production">Event Production</option>
+      <option value="Consultation">Consultation</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <div class="lbl" style="top:50.12%"><img src="assets/label-brief.png" alt="Brief"></div>
+    <textarea class="fld-textarea" name="brief" placeholder="describe your project" style="top:48.6%;height:62px;padding-top:0" required></textarea>
+
+    <div class="lbl" style="top:58.22%"><img src="assets/label-date_needed.png" alt="Date Needed"></div>
+    <input class="fld" name="date_needed" type="text" placeholder="mm / dd / yyyy" style="top:58.22%;left:42.75%">
+
+    <div class="lbl" style="top:62.39%"><img src="assets/label-email.png" alt="Email"></div>
+    <input class="fld" name="email" type="email" placeholder="your@email.com" style="top:62.39%;left:32.15%" required>
+
+    <button class="check-submit" type="submit">Send Order</button>
+  </form>
+
+  <p id="contact-success">Order received — we'll be in touch!</p>
 </section>
 
 <!-- ── BRANDS CAROUSEL ────────────────────────────────────────── -->
@@ -935,7 +1057,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   /* Contact */
-  gsap.from(['#guest-check-img', '#contact .section-heading', '#contact-cta'], {
+  gsap.from(['#contact .section-heading', '#contact-form'], {
     opacity: 0, y: revY, duration: isMobile ? 0.5 : 0.75, ease: 'power2.out', stagger: rm ? 0 : 0.15,
     scrollTrigger: { trigger: '#contact', start: 'top 85%', ...ST },
   });
@@ -954,6 +1076,40 @@ window.addEventListener('DOMContentLoaded', () => {
 
   ScrollTrigger.refresh();
 });
+
+/* ── CONTACT FORM ────────────────────────────────────────────── */
+(function() {
+  var form = document.getElementById('contact-form');
+  var success = document.getElementById('contact-success');
+  if (!form) return;
+  var sel = form.querySelector('.fld-select');
+  if (sel) {
+    sel.addEventListener('change', function() {
+      this.classList.toggle('has-value', this.value !== '');
+    });
+  }
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var data = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(function(r) {
+      if (r.ok) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        return r.json().then(function(d) {
+          alert(d.errors ? d.errors.map(function(e){return e.message}).join(', ') : 'Something went wrong. Try emailing hello@spkscenery.com');
+        });
+      }
+    }).catch(function() {
+      alert('Network error. Try emailing hello@spkscenery.com');
+    });
+  });
+})();
+
 </script>
 </body>
 </html>
