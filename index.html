@@ -521,7 +521,7 @@
     .brands-track-wrapper { overflow: hidden; }
     @keyframes scroll-brands {
       0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      100% { transform: translateX(var(--scroll-width, -50%)); }
     }
     .brands-track {
       display: flex;
@@ -529,6 +529,8 @@
       gap: 80px;
       width: max-content;
       animation: scroll-brands 24s linear infinite;
+      will-change: transform;
+      backface-visibility: hidden;
     }
     .brands-track:hover { animation-play-state: paused; }
     .brand-item {
@@ -1250,6 +1252,31 @@ window.addEventListener('load', () => {
       if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 300);
     }
   });
+</script>
+<script>
+(function() {
+  var track = document.querySelector('.brands-track');
+  if (!track) return;
+  var items = Array.from(track.querySelectorAll('.brand-item'));
+  var half = Math.floor(items.length / 2);
+  // Remove set 2 from HTML — we'll clone set 1 via JS
+  items.slice(half).forEach(function(el) { el.remove(); });
+  // Clone set 1
+  var set1 = Array.from(track.querySelectorAll('.brand-item'));
+  set1.forEach(function(el) {
+    track.appendChild(el.cloneNode(true));
+  });
+  // Once images load, set exact pixel width
+  window.addEventListener('load', function() {
+    var w = set1.reduce(function(acc, el) { return acc + el.offsetWidth; }, 0);
+    var gap = 80 * (set1.length);
+    var total = w + gap;
+    track.style.setProperty('--scroll-width', '-' + total + 'px');
+    track.style.animation = 'none';
+    track.offsetHeight; // reflow
+    track.style.animation = '';
+  });
+})();
 </script>
 </body>
 </html>
